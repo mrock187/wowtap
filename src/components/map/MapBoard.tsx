@@ -58,6 +58,9 @@ export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
   const frame = frames[frames.length - 1]
   const layer = atlas.layer(frame.id)
   const extent = atlas.bounds(frame.id)
+  const [cropLeft, cropTop, cropRight, cropBottom] = layer.imageCrop ?? [0, 0, 1, 1]
+  const imageWidth = extent.width / (cropRight - cropLeft)
+  const imageHeight = extent.height / (cropBottom - cropTop)
   const width = extent.width / frame.zoom
   const height = extent.height / frame.zoom
   const left = frame.center.x - width / 2
@@ -248,7 +251,8 @@ export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
           <image
             key={`${layer.id}:${retry}`}
             href={`/${layer.image}${retry ? `?retry=${retry}` : ''}`}
-            x={extent.left} y={extent.top} width={extent.width} height={extent.height}
+            x={extent.left - cropLeft * imageWidth} y={extent.top - cropTop * imageHeight}
+            width={imageWidth} height={imageHeight}
             preserveAspectRatio="none"
             onLoad={() => setImages(current => ({ ...current, [layer.id]: 'loaded' }))}
             onError={() => setImages(current => ({ ...current, [layer.id]: 'error' }))}

@@ -7,7 +7,8 @@ export async function loadSchedule(signal?: AbortSignal): Promise<FrozenSchedule
   if (!response.ok) throw new Error(`Atlas request failed (${response.status})`)
 
   const schedule = parseSchedule(await response.json())
-  const rights = import.meta.env.DEV && import.meta.env.MODE === 'qa' ? 'fixture' : 'approved'
+  const rights = import.meta.env.DEV && import.meta.env.MODE === 'qa' ? 'fixture'
+    : import.meta.env.DEV && import.meta.env.MODE === 'local-forever' ? 'local-only' : 'approved'
   if (schedule.seasons.some(season => season.content.atlas.layers.some(layer => layer.rights !== rights))) {
     throw new Error('Atlas includes unapproved assets')
   }

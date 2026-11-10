@@ -35,3 +35,9 @@ The final `npm run verify:qa` passed with 65 unit tests and 14 Chromium tests. T
 The final production build has five files, 366,973 bytes total and a 355,327-byte largest asset. Vite reported 109.80 kB gzip for the JavaScript. The loopback Chromium smoke measured three same-origin requests, 110 ms DOM ready and 110 ms load, with zero console or network errors. This measures the unavailable-state production build. Real-world map transfer and rendering performance remain unmeasured.
 
 The Pages Free size audit passed against 20,000 files and 25 MiB per file. The package remains **INCOMPLETE / PUBLICATION_BLOCKED** because it contains zero approved Forever images and zero verified locations. The QA data covers five fictional map layers and 13 fictional locations. Official visual QA, geographic coverage and publication require the content described in the [release guide](DEPLOY.md). Storage-denied play keeps progress in memory for the active page.
+
+## Real Forever local preview, November 10, 2026
+
+`npm run local:prepare` produced three unlabeled real-source plates and a 97-location pool. Chromium completed all five rounds on desktop 1440 × 900 and mobile 390 × 844 with 25,000 points and zero page or network errors. Visually inspected the world and continent screenshots. The bundle and screenshot files are stored under the Git-ignored `.local/` directory. [Source registration and preview commands](LOCAL_FOREVER.md)
+
+The post-preview `npm run verify:qa` passed 67 unit tests and 14 browser tests. The production package stayed at five files (367,091 bytes) and passed the loopback smoke test. The release check still reported an empty official content package. Repeating local preparation preserved the schedule SHA-256. A direct request to the local source cache returned HTTP 403.

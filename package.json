@@ -21,7 +21,9 @@
     "schedule:freeze": "tsx scripts/schedule/freeze.ts",
     "verify:qa": "npm run lint && npm run typecheck && npm run test && tsx scripts/maps/audit.ts --fixtures && tsx scripts/data/validate.ts --allow-missing && npm run build && npm run test:e2e && tsx scripts/pages/preflight.ts --qa && npm run pages:smoke",
     "verify": "npm run verify:qa && npm run maps:audit && npm run data:validate && npm run pages:preflight",
-    "pages:smoke": "tsx scripts/pages/smoke.ts"
+    "pages:smoke": "tsx scripts/pages/smoke.ts",
+    "local:prepare": "tsx scripts/local/prepare.ts",
+    "dev:forever": "vite --mode local-forever --port 4175"
   },
   "dependencies": {
     "react": "^19.2.0",

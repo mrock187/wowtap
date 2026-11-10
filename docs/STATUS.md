@@ -15,3 +15,7 @@
 | G10 | Blocked | Real content, publication rights and deployment authorization required. [Release guide](DEPLOY.md) |
 
 The worktree manager could not attach this Windows checkout. Cartography, data and engine work ran in parallel with disjoint file ownership in the same repository.
+
+## Real Forever local preview
+
+The local-only snapshot is playable with `npm run dev:forever` after `npm run local:prepare`. It has three real unlabeled plates and 97 source-backed points on the two continents, pinned to Forever build 1.60.1.69913. The public release remains blocked. [Local preview and coverage](LOCAL_FOREVER.md)

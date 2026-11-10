@@ -21,6 +21,7 @@ const layerSchema = z.object({
   kind: mapKind,
   parentId: idSchema.nullable(),
   bounds: boundsSchema,
+  imageCrop: boundsSchema.optional(),
   width: z.number().int().positive(),
   height: z.number().int().positive(),
   maxZoom: z.number().min(1).max(32),

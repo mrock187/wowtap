@@ -162,7 +162,7 @@
         "G7"
       ],
       "evidence": [
-        "65 unit tests",
+        "67 unit tests",
         "14 Chromium browser tests",
         "Axe WCAG 2.0/2.1 A/AA reported zero violations on audited screens"
       ],
@@ -177,10 +177,9 @@
         "G8"
       ],
       "evidence": [
-        "Fresh Git archive npm ci",
         "npm run verify:qa",
         "npm run pages:smoke",
-        "5 output files, 366,973 total bytes, largest 355,327 bytes"
+        "5 output files, 367,091 total bytes, largest 355,445 bytes"
       ],
       "blocker": null,
       "gate": "Clean build, size and static preview checks"
@@ -214,6 +213,18 @@
       "gate": "Explicit rights approval and Pages publication authorization"
     }
   },
-  "lastUpdated": "2026-11-10T18:08:35.6981034Z",
-  "releaseState": "INCOMPLETE / PUBLICATION_BLOCKED"
+  "lastUpdated": "2026-11-10T18:16:52.7668096Z",
+  "releaseState": "INCOMPLETE / PUBLICATION_BLOCKED",
+  "localPreview": {
+    "status": "passed",
+    "build": "1.60.1.69913",
+    "mapLayers": 3,
+    "locations": 97,
+    "port": 4175,
+    "evidence": [
+      "npm run local:prepare",
+      "Chromium real-source desktop and mobile five-round playthrough",
+      "docs/LOCAL_FOREVER.md"
+    ]
+  }
 }

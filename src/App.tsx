@@ -57,6 +57,7 @@ export function App() {
   }, [journal, schedule, today])
   const stats = streaks(completed.map(puzzle => puzzle.date), today)
   const qa = import.meta.env.DEV && import.meta.env.MODE === 'qa'
+  const localForever = import.meta.env.DEV && import.meta.env.MODE === 'local-forever'
 
   function start() {
     if (!todayPuzzle) return
@@ -108,6 +109,7 @@ export function App() {
       </>
     }>
       {qa && <p className="qa-banner">Local QA · Fictional atlas and locations</p>}
+      {localForever && <p className="qa-banner">Local preview · WoW: Forever {schedule?.seasons[0].content.atlas.build}</p>}
       {live && livePuzzle && record ? (
         <Expedition
           key={`${live.date}:${live.mode}`}

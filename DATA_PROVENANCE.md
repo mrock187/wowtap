@@ -17,3 +17,7 @@ OpenMap describes its dungeon entrance points as ghost-return locations and may 
 - `tests/fixtures/maps/`: five original fictional SVGs used by the isolated loopback QA server. Build 0.0.0.1 is a schema-test sentinel. Production inventory is zero Forever map assets, zero approved derivatives and zero verified answer entries. [Map evidence](docs/research/MAPS.md) · [Location evidence](docs/research/LOCATIONS.md)
 - `public/favicon.svg` and the compass interface ornament are original project graphics. They contain no imported Warcraft art.
 - A published image must have release approval, an exact-build atlas layer, and a SHA-256 recorded in both its manifest and this ledger. Retain each historical image at its frozen path and digest.
+
+## Local-only Forever assets
+
+The local-only workflow loads the three OpenMap cleaned overview plates and selected Peligaming AreaPOI data into `.local/forever/`. Exact upstream paths, revisions and SHA-256 values are pinned in `scripts/local/content.ts`. The imagery and derivative data are served by the explicitly selected loopback preview. Their distribution status is unchanged. [Local source and calibration audit](docs/LOCAL_FOREVER.md)
