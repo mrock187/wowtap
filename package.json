@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run tests/unit",
+    "test": "vitest run",
     "build": "vite build",
     "dev:qa": "vite --mode qa --port 4174",
     "maps:audit": "tsx scripts/maps/audit.ts",

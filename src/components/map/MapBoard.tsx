@@ -65,6 +65,10 @@ export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
   const unit = 1 / (Math.min(size.width / width, size.height / height) || 1)
   const imageStatus = images[layer.id]
   const worldGuess = guess ? atlas.toWorld(guess.mapId, guess.point) : null
+  const details = atlas.children(layer.id).map(child => ({
+    child, center: atlas.toWorld(child.id, { x: .5, y: .5 }),
+  })).filter(({ center }) => center.x >= left && center.x <= left + width
+    && center.y >= top && center.y <= top + height)
 
   useEffect(() => {
     const element = svg.current
@@ -173,8 +177,15 @@ export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
   }
 
   function pointerUp(event: PointerEvent<SVGSVGElement>) {
-    if (!pointers.current.delete(event.pointerId)) return
-    if (!pointers.current.size && !moved.current) pin(toWorld({ x: event.clientX, y: event.clientY }))
+    if (!pointers.current.delete(event.pointerId) || pointers.current.size || moved.current) return
+    const world = toWorld({ x: event.clientX, y: event.clientY })
+    if (!world || imageStatus !== 'loaded') return
+    if (world.x < left || world.x > left + width || world.y < top || world.y > top + height) return
+    // Use the actual tap position so touch target adjustment cannot open a nearby layer.
+    const detail = details.find(({ center }) => Math.abs(world.x - center.x) <= 22 * unit
+      && Math.abs(world.y - center.y) <= 22 * unit)
+    if (detail) enter(detail.child.id)
+    else pin(world)
   }
 
   function enter(id: string) {
@@ -242,16 +253,15 @@ export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
             onLoad={() => setImages(current => ({ ...current, [layer.id]: 'loaded' }))}
             onError={() => setImages(current => ({ ...current, [layer.id]: 'error' }))}
           />
-          {imageStatus === 'loaded' && atlas.children(layer.id).map(child => {
-            const center = atlas.toWorld(child.id, { x: .5, y: .5 })
-            if (center.x < left || center.x > left + width || center.y < top || center.y > top + height) return null
+          {imageStatus === 'loaded' && details.map(({ child, center }) => {
             const label = child.kind === 'city' ? 'Enter detailed map' : `Open ${child.kind} map`
             return (
               <g
                 key={child.id} className="map-portal" role="button" aria-label={label} tabIndex={0}
                 transform={`translate(${center.x} ${center.y}) scale(${unit})`}
-                onPointerDown={event => event.stopPropagation()}
-                onClick={() => enter(child.id)}
+                onClick={event => {
+                  if (event.detail === 0) enter(child.id)
+                }}
                 onKeyDown={event => {
                   if (event.key === 'Enter' || event.key === ' ') {
                     event.preventDefault()

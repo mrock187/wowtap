@@ -1,20 +1,21 @@
 import { expect, test, type Page } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 import { createAtlas } from '../../src/domain/atlas'
-import { freezeSchedule, readPuzzle } from '../../src/engine/schedule'
+import { freezeSchedule, readPuzzle, utcDate, type DailyPuzzle } from '../../src/engine/schedule'
 import { JOURNAL_KEY } from '../../src/storage/journal'
 import { gameFixture, qaDate } from '../fixtures/game'
 
-const puzzle = readPuzzle(freezeSchedule(gameFixture, {
+const fixtureSchedule = freezeSchedule(gameFixture, {
   startDate: '2026-11-01', days: 60, version: 'local-qa',
-}), qaDate)!
+})
+const puzzle = readPuzzle(fixtureSchedule, qaDate)!
 const atlas = createAtlas(puzzle.atlas)
 
 const guessMap = (page: Page) => page.getByRole('group', { name: 'Interactive unlabeled map' })
 const confirm = (page: Page) => page.getByRole('button', { name: 'Confirm pin' })
 
-async function openExpedition(page: Page) {
-  await page.clock.setFixedTime(new Date(qaDate + 'T12:00:00Z'))
+async function openExpedition(page: Page, date = qaDate) {
+  await page.clock.setFixedTime(new Date(date + 'T12:00:00Z'))
   await page.goto('/')
   await page.getByRole('button', { name: 'Begin expedition' }).click()
   await expect(guessMap(page)).toHaveAttribute('viewBox', '0 0 1000 600')
@@ -32,8 +33,8 @@ async function place(page: Page, x: number, y: number, mobile: boolean) {
   await expect(confirm(page)).toBeEnabled()
 }
 
-async function placeAnswer(page: Page, round: number, mobile: boolean) {
-  const target = puzzle.rounds[round]
+async function placeAnswer(page: Page, round: number, mobile: boolean, daily: DailyPuzzle = puzzle) {
+  const target = daily.rounds[round]
   const path = atlas.path(target.mapId)
   for (let level = 1; level < path.length; level++) {
     const child = path[level]
@@ -183,4 +184,37 @@ test('serializes official submissions across tabs and keeps scoring offline', as
   await page.getByRole('button', { name: 'Next round' }).click()
   await expect(page.getByText('Round 2 of 5', { exact: false })).toBeVisible()
   await context.setOffline(false)
+})
+
+test('scores a detailed city pin after backing out and rejects the wrong landmass', async ({ page }, testInfo) => {
+  const season = fixtureSchedule.seasons[0]
+  const cityIds = new Set(season.content.dataset.locations.filter(location => location.precision === 'city').map(location => location.id))
+  const offset = season.lineups.findIndex(lineup => lineup.some(id => cityIds.has(id)))
+  expect(offset).toBeGreaterThanOrEqual(0)
+  const date = utcDate(new Date(Date.parse(season.startDate) + offset * 86_400_000))
+  const daily = readPuzzle(fixtureSchedule, date)!
+  const round = daily.rounds.findIndex(location => location.precision === 'city')
+  expect(round).toBeGreaterThan(0)
+  const mobile = testInfo.project.name === 'mobile'
+  await openExpedition(page, date)
+
+  for (let index = 0; index < round; index++) {
+    const targetContinent = atlas.path(daily.rounds[index].mapId)[1]
+    const other = atlas.children(atlas.world.id).find(layer => layer.id !== targetContinent.id)!
+    const point = atlas.toWorld(other.id, { x: .3, y: .3 })
+    await expect(guessMap(page).locator('.map-portal')).toHaveCount(2)
+    await place(page, point.x, point.y, mobile)
+    await confirm(page).click()
+    await expect(page.getByText('Your pin was on a different landmass.')).toBeVisible()
+    await page.getByRole('button', { name: 'Next round' }).click()
+  }
+
+  await placeAnswer(page, round, mobile, daily)
+  await page.getByRole('button', { name: 'Back' }).click()
+  await expect(guessMap(page).locator('.map-pin')).toHaveCount(1)
+  await page.getByRole('button', { name: 'Enter detailed map' }).click()
+  await expect(guessMap(page).locator('.map-pin')).toHaveCount(1)
+  await page.screenshot({ path: testInfo.outputPath('game-city.png'), fullPage: true, scale: 'css' })
+  await confirm(page).click()
+  await expect(page.locator('.round-score strong')).toHaveText('5,000')
 })

@@ -25,3 +25,13 @@ Manually inspected fictional fixture captures: [desktop world](qa/fixture-world-
 `npm run test:e2e` passed 12 tests in 24.8 s. Chromium ran at 1440 × 900 and 390 × 844, with an additional 320 × 700 mobile layout audit. Axe reported zero WCAG 2.0/2.1 A and AA violations on the tested lobby, help dialog and round screens. The full play-through observed zero page exceptions, asset HTTP errors or cross-origin requests. Both projects tested offline scoring and simultaneous confirmation in two tabs. A blocked map request recovered after Retry.
 
 Fixture screen references: [desktop round](qa/game-world-desktop.png), [mobile reveal](qa/game-reveal-mobile.png), [mobile results](qa/game-results-mobile.png). Browser coverage is Chromium desktop and mobile emulation. Actual iOS Safari and real-content visual QA are pending.
+
+## Final software and release checks, November 10, 2026
+
+A fresh Git archive at `c82530e` passed `npm ci` (0 reported vulnerabilities) and all 65 unit and 12 browser tests at that revision. `npm run verify` then exited 1 at the real map audit, which reported zero map files. The real location validator and release preflight also reported missing content when run separately.
+
+The final `npm run verify:qa` passed with 65 unit tests and 14 Chromium tests. The added city case caught mobile tap targeting opening a nearby layer. The renderer now evaluates the pointer coordinates directly. Both browser profiles place a detailed city pin, back out, re-enter, and score 5,000. The same case verifies feedback for guesses on the wrong landmass. [Mobile city round](qa/game-city-mobile.png)
+
+The final production build has five files, 366,973 bytes total and a 355,327-byte largest asset. Vite reported 109.80 kB gzip for the JavaScript. The loopback Chromium smoke measured three same-origin requests, 110 ms DOM ready and 110 ms load, with zero console or network errors. This measures the unavailable-state production build. Real-world map transfer and rendering performance remain unmeasured.
+
+The Pages Free size audit passed against 20,000 files and 25 MiB per file. The package remains **INCOMPLETE / PUBLICATION_BLOCKED** because it contains zero approved Forever images and zero verified locations. The QA data covers five fictional map layers and 13 fictional locations. Official visual QA, geographic coverage and publication require the content described in the [release guide](DEPLOY.md). Storage-denied play keeps progress in memory for the active page.

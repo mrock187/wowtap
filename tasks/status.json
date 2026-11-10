@@ -121,7 +121,7 @@
     },
     "G6": {
       "status": "passed",
-      "attempts": 1,
+      "attempts": 4,
       "owner": "map-ui",
       "dependencies": [
         "G3Q",
@@ -131,7 +131,9 @@
         "4 Playwright tests passed with fictional QA atlas",
         "docs/qa/fixture-world-desktop.png",
         "docs/qa/fixture-zone-desktop.png",
-        "docs/qa/fixture-city-mobile.png"
+        "docs/qa/fixture-city-mobile.png",
+        "City regression confirms precise touch placement near a layer affordance",
+        "docs/qa/game-city-mobile.png"
       ],
       "blocker": null,
       "gate": "Desktop and mobile map interaction and visual review"
@@ -154,14 +156,14 @@
     },
     "G8": {
       "status": "passed",
-      "attempts": 1,
+      "attempts": 3,
       "owner": "qa",
       "dependencies": [
         "G7"
       ],
       "evidence": [
-        "64 unit tests",
-        "12 Chromium browser tests",
+        "65 unit tests",
+        "14 Chromium browser tests",
         "Axe WCAG 2.0/2.1 A/AA reported zero violations on audited screens"
       ],
       "blocker": null,
@@ -169,15 +171,16 @@
     },
     "G9Q": {
       "status": "passed",
-      "attempts": 1,
+      "attempts": 2,
       "owner": "lead",
       "dependencies": [
         "G8"
       ],
       "evidence": [
+        "Fresh Git archive npm ci",
         "npm run verify:qa",
         "npm run pages:smoke",
-        "5 output files, 366,782 total bytes"
+        "5 output files, 366,973 total bytes, largest 355,327 bytes"
       ],
       "blocker": null,
       "gate": "Clean build, size and static preview checks"
@@ -211,6 +214,6 @@
       "gate": "Explicit rights approval and Pages publication authorization"
     }
   },
-  "lastUpdated": "2026-11-10T18:02:16.7101259Z",
+  "lastUpdated": "2026-11-10T18:08:35.6981034Z",
   "releaseState": "INCOMPLETE / PUBLICATION_BLOCKED"
 }
