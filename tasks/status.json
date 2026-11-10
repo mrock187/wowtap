@@ -117,18 +117,22 @@
       "blocker": null
     },
     "G8": {
-      "status": "running",
+      "status": "passed",
       "attempts": 1,
       "owner": "qa",
       "dependencies": [
         "G7"
       ],
-      "evidence": [],
+      "evidence": [
+        "64 unit tests",
+        "12 Chromium browser tests",
+        "Axe WCAG 2.0/2.1 A/AA reported zero violations on audited screens"
+      ],
       "blocker": null
     },
     "G9": {
-      "status": "pending",
-      "attempts": 0,
+      "status": "running",
+      "attempts": 1,
       "owner": "lead",
       "dependencies": [
         "G8"
@@ -147,6 +151,6 @@
       "blocker": null
     }
   },
-  "lastUpdated": "2026-11-10T17:55:28.0788863Z",
+  "lastUpdated": "2026-11-10T17:57:21.2470102Z",
   "releaseState": "INCOMPLETE"
 }

@@ -19,3 +19,9 @@ Manually inspected fictional fixture captures: [desktop world](qa/fixture-world-
 ## G7 game integration, November 10, 2026
 
 `npm run test` passed 64 unit tests. `npm.cmd run test:e2e -- game.spec.ts` passed four Chromium cases. Both projects completed five rounds with a 25,000 result using the fixture. Tests covered refresh before and after confirmation, the daily guard, clipboard fallback with five green squares, UTC midnight rollover, past results, non-scoring practice, and combined corrupt/quota-denied storage. The real-content release gate remains blocked.
+
+## G8 browser regression, November 10, 2026
+
+`npm run test:e2e` passed 12 tests in 24.8 s. Chromium ran at 1440 × 900 and 390 × 844, with an additional 320 × 700 mobile layout audit. Axe reported zero WCAG 2.0/2.1 A and AA violations on the tested lobby, help dialog and round screens. The full play-through observed zero page exceptions, asset HTTP errors or cross-origin requests. Both projects tested offline scoring and simultaneous confirmation in two tabs. A blocked map request recovered after Retry.
+
+Fixture screen references: [desktop round](qa/game-world-desktop.png), [mobile reveal](qa/game-reveal-mobile.png), [mobile results](qa/game-results-mobile.png). Browser coverage is Chromium desktop and mobile emulation. Actual iOS Safari and real-content visual QA are pending.

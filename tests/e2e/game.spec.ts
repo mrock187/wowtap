@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
+import AxeBuilder from '@axe-core/playwright'
 import { createAtlas } from '../../src/domain/atlas'
 import { freezeSchedule, readPuzzle } from '../../src/engine/schedule'
 import { JOURNAL_KEY } from '../../src/storage/journal'
@@ -125,4 +126,61 @@ test('recovers corrupt storage and runs with browser storage disabled', async ({
   await expect(page.getByRole('button', { name: 'Next round' })).toBeVisible()
   await page.getByRole('button', { name: 'Next round' }).click()
   await expect(page.getByText('Round 2 of 5', { exact: false })).toBeVisible()
+})
+
+test('supports narrow screens and has no automated accessibility violations', async ({ page }, testInfo) => {
+  if (testInfo.project.name === 'mobile') await page.setViewportSize({ width: 320, height: 700 })
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.clock.setFixedTime(new Date(qaDate + 'T12:00:00Z'))
+  await page.goto('/')
+  const launch = page.getByRole('button', { name: 'Begin expedition' })
+  await expect(launch).toBeVisible()
+  await page.screenshot({ path: testInfo.outputPath('cover.png'), scale: 'css' })
+  async function audit() {
+    const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
+    expect(results.violations.map(item => ({ id: item.id, nodes: item.nodes.map(node => node.target) }))).toEqual([])
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(page.viewportSize()!.width)
+  }
+  await audit()
+  await page.getByRole('button', { name: 'How to play' }).click()
+  await expect(page.getByRole('dialog', { name: 'Read the terrain' })).toBeVisible()
+  await audit()
+  await page.keyboard.press('Escape')
+  await launch.click()
+  await expect(guessMap(page)).toBeVisible()
+  await audit()
+  await guessMap(page).focus()
+  await page.keyboard.press('Enter')
+  await expect(confirm(page)).toBeEnabled()
+  const button = await confirm(page).boundingBox()
+  expect(button?.height).toBeGreaterThanOrEqual(44)
+})
+
+test('serializes official submissions across tabs and keeps scoring offline', async ({ page, context }) => {
+  await openExpedition(page)
+  const second = await context.newPage()
+  await second.clock.setFixedTime(new Date(qaDate + 'T12:00:00Z'))
+  await second.goto('/')
+  await second.getByRole('button', { name: 'Resume expedition' }).click()
+  const firstMap = guessMap(page)
+  await firstMap.focus()
+  await page.keyboard.press('Enter')
+  await expect(confirm(page)).toBeEnabled()
+  await expect(confirm(second)).toBeEnabled()
+  await context.setOffline(true)
+  const submit = (tab: Page) => tab.evaluate(() => {
+    const button = [...document.querySelectorAll('button')].find(node => node.textContent === 'Confirm pin')
+    button?.click()
+  })
+  await Promise.all([submit(page), submit(second)])
+  for (const tab of [page, second]) {
+    await expect(tab.getByRole('button', { name: 'Next round' })).toBeVisible()
+    const saved = await tab.evaluate(({ key, date }) => JSON.parse(localStorage.getItem(key)!).games[date].guesses.length, {
+      key: JOURNAL_KEY, date: qaDate,
+    })
+    expect(saved).toBe(1)
+  }
+  await page.getByRole('button', { name: 'Next round' }).click()
+  await expect(page.getByText('Round 2 of 5', { exact: false })).toBeVisible()
+  await context.setOffline(false)
 })
