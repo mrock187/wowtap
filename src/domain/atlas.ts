@@ -48,7 +48,11 @@ export function createAtlas(manifest: MapManifest) {
     return entry.parentId ? [...path(entry.parentId), entry] : [entry]
   }
 
-  return { world, layer, bounds, toWorld, fromWorld, path }
+  function children(id: string): MapLayer[] {
+    return manifest.layers.filter(entry => entry.parentId === id)
+  }
+
+  return { world, layer, bounds, toWorld, fromWorld, path, children }
 }
 
 export type Atlas = ReturnType<typeof createAtlas>

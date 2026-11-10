@@ -11,8 +11,12 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "build": "vite build"
+    "test": "vitest run tests/unit",
+    "build": "vite build",
+    "dev:qa": "vite --mode qa --port 4174",
+    "maps:audit": "tsx scripts/maps/audit.ts",
+    "data:validate": "tsx scripts/data/validate.ts",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "react": "^19.2.0",

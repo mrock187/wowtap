@@ -44,49 +44,66 @@
       "blocker": null
     },
     "G3": {
-      "status": "pending",
-      "attempts": 0,
+      "status": "blocked",
+      "attempts": 1,
       "owner": "cartography",
       "dependencies": [
         "G2"
       ],
-      "evidence": [],
-      "blocker": null
+      "evidence": [
+        "edfc5a9",
+        "docs/research/MAPS.md",
+        "QA audit: 5 files, 40,165 bytes"
+      ],
+      "blocker": "No rights-cleared, calibrated Forever artwork or atlas manifest."
     },
     "G4": {
-      "status": "pending",
-      "attempts": 0,
+      "status": "blocked",
+      "attempts": 1,
       "owner": "locations",
       "dependencies": [
         "G2"
       ],
-      "evidence": [],
-      "blocker": null
+      "evidence": [
+        "ffe0b95",
+        "docs/research/LOCATIONS.md",
+        "Eight intake tests passed"
+      ],
+      "blocker": "No audited, exact-build Forever answer coordinates aligned to the atlas."
     },
     "G5": {
-      "status": "pending",
-      "attempts": 0,
+      "status": "passed",
+      "attempts": 1,
       "owner": "engine",
       "dependencies": [
         "G2"
       ],
-      "evidence": [],
+      "evidence": [
+        "9f7555a",
+        "docs/ENGINE.md",
+        "38 engine tests passed"
+      ],
       "blocker": null
     },
     "G6": {
-      "status": "pending",
-      "attempts": 0,
+      "status": "passed",
+      "attempts": 1,
       "owner": "map-ui",
       "dependencies": [
         "G3",
         "G5"
       ],
-      "evidence": [],
+      "evidence": [
+        "4 Playwright tests passed with fictional QA atlas",
+        "docs/qa/fixture-world-desktop.png",
+        "docs/qa/fixture-zone-desktop.png",
+        "docs/qa/fixture-city-mobile.png"
+      ],
       "blocker": null
     },
     "G7": {
-      "status": "pending",
-      "attempts": 0,
+      "status": "running",
+      "attempts": 1,
       "owner": "game-ui",
       "dependencies": [
         "G4",
@@ -127,6 +144,6 @@
       "blocker": null
     }
   },
-  "lastUpdated": "2026-11-10T17:40:00.4536144Z",
+  "lastUpdated": "2026-11-10T17:49:52.5649974Z",
   "releaseState": "INCOMPLETE"
 }
