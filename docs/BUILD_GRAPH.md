@@ -61,3 +61,7 @@ Only one owner should edit an owned directory during a phase; QA can read other 
 8. G8 -> G9: full browser, accessibility and responsive regression report.
 9. G9 -> G10: free tier asset preflight and local production preview.
 10. G10 -> live: approval and verified deployed URL or precise instructions if no credentials.
+
+## Software verification when source content is unavailable
+
+G3 and G4 each track implementation evidence and real-content evidence. A missing atlas or insufficient verified locations blocks their real-content gates. Passing fixture-only renderer, validation and content-loading checks can unlock the G6/G7 software work through a local QA server. Production readiness, the real map visual audit, release dataset verification and publication still require the real G3/G4 gates to pass. Fixture assets and entries stay under tests and outside the default production bundle.

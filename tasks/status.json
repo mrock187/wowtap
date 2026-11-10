@@ -29,14 +29,18 @@
       "blocker": null
     },
     "G2": {
-      "status": "pending",
-      "attempts": 0,
+      "status": "passed",
+      "attempts": 1,
       "owner": "lead",
       "dependencies": [
         "G0",
         "G1"
       ],
-      "evidence": [],
+      "evidence": [
+        "src/domain/content.ts",
+        "src/domain/atlas.ts",
+        "npm run test: 9 coordinate and schema tests"
+      ],
       "blocker": null
     },
     "G3": {
@@ -123,6 +127,6 @@
       "blocker": null
     }
   },
-  "lastUpdated": "2026-11-10T17:38:19.2126818Z",
+  "lastUpdated": "2026-11-10T17:40:00.4536144Z",
   "releaseState": "INCOMPLETE"
 }
