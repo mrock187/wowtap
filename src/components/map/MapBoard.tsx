@@ -57,6 +57,8 @@ export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
   // The reveal mounts a separate board so its initial view cannot influence guessing.
   const frame = frames[frames.length - 1]
   const layer = atlas.layer(frame.id)
+  const terrain = import.meta.env.DEV && import.meta.env.MODE === 'local-forever'
+  const image = terrain && layer.uiMapId ? `terrain/${layer.uiMapId}.png` : layer.image
   const extent = atlas.bounds(frame.id)
   const [cropLeft, cropTop, cropRight, cropBottom] = layer.imageCrop ?? [0, 0, 1, 1]
   const imageWidth = extent.width / (cropRight - cropLeft)
@@ -250,7 +252,7 @@ export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
           <g clipPath={`url(#${clipId})`}>
           <image
             key={`${layer.id}:${retry}`}
-            href={`/${layer.image}${retry ? `?retry=${retry}` : ''}`}
+            href={`/${image}${retry ? `?retry=${retry}` : ''}`}
             x={extent.left - cropLeft * imageWidth} y={extent.top - cropTop * imageHeight}
             width={imageWidth} height={imageHeight}
             preserveAspectRatio="none"

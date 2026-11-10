@@ -21,3 +21,7 @@ OpenMap describes its dungeon entrance points as ghost-return locations and may 
 ## Local-only Forever assets
 
 The local-only workflow loads the three OpenMap cleaned overview plates and selected Peligaming AreaPOI data into `.local/forever/`. Exact upstream paths, revisions and SHA-256 values are pinned in `scripts/local/content.ts`. The imagery and derivative data are served by the explicitly selected loopback preview. Their distribution status is unchanged. [Local source and calibration audit](docs/LOCAL_FOREVER.md)
+
+## Terrain-only presentation
+
+The local preview renders three hillshade plates using the build-pinned WDL sources documented in [Local WoW: Forever preview](docs/LOCAL_FOREVER.md). Source files, generated rasters, and local captures live under the ignored `.local/terrain/` and `.local/forever/` paths. Only terrain heights and ocean masks contribute to the basemap.

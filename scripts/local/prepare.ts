@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { freezeSchedule, parseSchedule, utcDate } from '../../src/engine/schedule'
 import { art, artUrl, createLocalContent, sourceData } from './content'
+import { prepareTerrain } from './terrain'
 
 const dir = new URL('../../.local/forever/', import.meta.url)
 const cache = new URL('../../.local/source-review/', import.meta.url)
@@ -21,7 +22,8 @@ async function file(url: string, sha: string, cacheName: string) {
 }
 
 const raw = await file(sourceData.url, sourceData.sha, 'world-map.json')
-const content = createLocalContent(JSON.parse(raw.toString('utf8')))
+const upstream: unknown = JSON.parse(raw.toString('utf8'))
+const content = createLocalContent(upstream)
 const images = await Promise.all(art.map(plate => file(artUrl(plate), plate.sha, `clean-${plate.uiMapId}.png`)))
 const scheduleFile = new URL('schedule.json', dir)
 const existing = await readFile(scheduleFile, 'utf8').catch((error: NodeJS.ErrnoException) => {
@@ -39,4 +41,5 @@ for (const [index, plate] of art.entries()) {
   await writeFile(new URL(`maps/${plate.uiMapId}.png`, dir), images[index])
 }
 if (!existing) await writeFile(scheduleFile, JSON.stringify(schedule) + '\n', { flag: 'wx' })
+await prepareTerrain(upstream)
 console.log(`Local Forever ${content.atlas.build}: ${content.atlas.layers.length} plates, ${latest.content.dataset.locations.length} locations, ${latest.cooldownDays}-day minimum repeat gap.`)
