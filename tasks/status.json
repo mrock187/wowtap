@@ -1,0 +1,128 @@
+{
+  "nodes": {
+    "G0": {
+      "status": "passed",
+      "attempts": 1,
+      "owner": "lead",
+      "dependencies": [],
+      "evidence": [
+        "docs/research/SOURCES.md",
+        "DATA_PROVENANCE.md"
+      ],
+      "blocker": null
+    },
+    "G1": {
+      "status": "passed",
+      "attempts": 2,
+      "owner": "lead",
+      "dependencies": [
+        "G0"
+      ],
+      "evidence": [
+        "npm ci: 213 packages",
+        "npm audit: 0 vulnerabilities",
+        "npm run lint",
+        "npm run typecheck",
+        "npm run build: 224.08 kB JS, 69.61 kB gzip",
+        "npm run dev and local HTTP 200"
+      ],
+      "blocker": null
+    },
+    "G2": {
+      "status": "pending",
+      "attempts": 0,
+      "owner": "lead",
+      "dependencies": [
+        "G0",
+        "G1"
+      ],
+      "evidence": [],
+      "blocker": null
+    },
+    "G3": {
+      "status": "pending",
+      "attempts": 0,
+      "owner": "cartography",
+      "dependencies": [
+        "G2"
+      ],
+      "evidence": [],
+      "blocker": null
+    },
+    "G4": {
+      "status": "pending",
+      "attempts": 0,
+      "owner": "locations",
+      "dependencies": [
+        "G2"
+      ],
+      "evidence": [],
+      "blocker": null
+    },
+    "G5": {
+      "status": "pending",
+      "attempts": 0,
+      "owner": "engine",
+      "dependencies": [
+        "G2"
+      ],
+      "evidence": [],
+      "blocker": null
+    },
+    "G6": {
+      "status": "pending",
+      "attempts": 0,
+      "owner": "map-ui",
+      "dependencies": [
+        "G3",
+        "G5"
+      ],
+      "evidence": [],
+      "blocker": null
+    },
+    "G7": {
+      "status": "pending",
+      "attempts": 0,
+      "owner": "game-ui",
+      "dependencies": [
+        "G4",
+        "G5",
+        "G6"
+      ],
+      "evidence": [],
+      "blocker": null
+    },
+    "G8": {
+      "status": "pending",
+      "attempts": 0,
+      "owner": "qa",
+      "dependencies": [
+        "G7"
+      ],
+      "evidence": [],
+      "blocker": null
+    },
+    "G9": {
+      "status": "pending",
+      "attempts": 0,
+      "owner": "lead",
+      "dependencies": [
+        "G8"
+      ],
+      "evidence": [],
+      "blocker": null
+    },
+    "G10": {
+      "status": "pending",
+      "attempts": 0,
+      "owner": "human",
+      "dependencies": [
+        "G9"
+      ],
+      "evidence": [],
+      "blocker": null
+    }
+  },
+  "lastUpdated": "2026-11-10T17:38:19.2126818Z",
+  "releaseState": "INCOMPLETE"
+}
