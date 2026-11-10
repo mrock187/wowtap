@@ -10,7 +10,10 @@ export default defineConfig({
   use: { baseURL, screenshot: 'only-on-failure', trace: 'retain-on-failure' },
   projects: [
     { name: 'desktop', use: { browserName: 'chromium', viewport: { width: 1440, height: 900 } } },
-    { name: 'mobile', use: { ...devices['iPhone 13'], defaultBrowserType: 'chromium' } },
+    {
+      name: 'mobile',
+      use: { ...devices['iPhone 13'], browserName: 'chromium', viewport: { width: 390, height: 844 } },
+    },
   ],
   webServer: {
     command: 'npm run dev:qa',

@@ -102,7 +102,7 @@
       "blocker": null
     },
     "G7": {
-      "status": "running",
+      "status": "passed",
       "attempts": 1,
       "owner": "game-ui",
       "dependencies": [
@@ -110,12 +110,15 @@
         "G5",
         "G6"
       ],
-      "evidence": [],
+      "evidence": [
+        "64 unit tests",
+        "4 Playwright game tests passed with isolated fictional fixtures"
+      ],
       "blocker": null
     },
     "G8": {
-      "status": "pending",
-      "attempts": 0,
+      "status": "running",
+      "attempts": 1,
       "owner": "qa",
       "dependencies": [
         "G7"
@@ -144,6 +147,6 @@
       "blocker": null
     }
   },
-  "lastUpdated": "2026-11-10T17:49:52.5649974Z",
+  "lastUpdated": "2026-11-10T17:55:28.0788863Z",
   "releaseState": "INCOMPLETE"
 }

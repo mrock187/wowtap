@@ -12,6 +12,10 @@ Windows, Node 20.19.0, npm 11.14.1. `npm ci --prefer-offline --no-audit` install
 
 G3 Chromium audit decoded five 1000 × 600 fictional map files (40,165 bytes total; largest 11,136 bytes). Default real audit reported missing approved atlas and zero layers. G4 technical intake passed eight unit tests and the release validator reported missing real atlas and locations. G5 passed 38 engine tests. See the [map audit](research/MAPS.md), [location audit](research/LOCATIONS.md), and [engine notes](ENGINE.md).
 
-`npm run lint`, `npm run typecheck`, `npm run test` (59 tests) and `npm.cmd run test:e2e -- map.spec.ts` (four Chromium cases) passed. Desktop 1440 × 900 exercised wheel, drag and zoom controls. iPhone-sized 390 × 844 Chromium emulation exercised CDP pinch and touchscreen taps. Both tested world reset, city drill-down, pin preservation on back, keyboard placement and image-failure retry.
+`npm run lint`, `npm run typecheck`, `npm run test` (59 tests) and `npm.cmd run test:e2e -- map.spec.ts` (four Chromium cases) passed. Desktop 1440 × 900 exercised wheel, drag and zoom controls. iPhone 13 Chromium emulation (390 × 664 CSS px in the initial run) exercised CDP pinch and touchscreen taps. Both tested world reset, city drill-down, pin preservation on back, keyboard placement and image-failure retry.
 
 Manually inspected fictional fixture captures: [desktop world](qa/fixture-world-desktop.png), [desktop zone](qa/fixture-zone-desktop.png), [mobile city](qa/fixture-city-mobile.png). These captures verify the renderer using original test artwork.
+
+## G7 game integration, November 10, 2026
+
+`npm run test` passed 64 unit tests. `npm.cmd run test:e2e -- game.spec.ts` passed four Chromium cases. Both projects completed five rounds with a 25,000 result using the fixture. Tests covered refresh before and after confirmation, the daily guard, clipboard fallback with five green squares, UTC midnight rollover, past results, non-scoring practice, and combined corrupt/quota-denied storage. The real-content release gate remains blocked.

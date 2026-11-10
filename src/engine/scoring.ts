@@ -77,7 +77,9 @@ export function scoreGuess(atlas: Atlas, location: Location, guess: Guess): Roun
   if (!nearest) throw new Error('A location requires at least one accepted answer')
 
   const radius = Math.hypot(atlas.world.width, atlas.world.height) / 4
-  const accuracy = Math.max(0, 1 - nearest.error / radius)
+  const target = atlas.bounds(location.mapId)
+  const tolerance = Math.hypot(target.width, target.height) * .003
+  const accuracy = Math.max(0, 1 - Math.max(0, nearest.error - tolerance) / (radius - tolerance))
   const geographicPoints = Math.round(MAX_ROUND_POINTS * accuracy ** 2)
   const regionPoints = differentContinent ? Math.min(500, Math.round(geographicPoints * .2)) : geographicPoints
   const cap = location.precision === 'city' && guess.mapId !== location.mapId

@@ -57,6 +57,6 @@
 }
 .map-message button { margin-top: 8px; }
 @media (max-width: 680px) {
-  .map-canvas { height: clamp(270px, 43vh, 410px); }
+  .map-canvas { height: clamp(236px, 37vh, 360px); }
   .map-breadcrumb { font-size: .7rem; }
 }
