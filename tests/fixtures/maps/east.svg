@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="600" viewBox="600 60 300 480" preserveAspectRatio="none">
+  <!-- Original fictional artwork for local technical QA. -->
+
+  <defs>
+    <linearGradient id="water" x2="0.75" y2="1">
+      <stop stop-color="#214947"/><stop offset="1" stop-color="#182e35"/>
+    </linearGradient>
+    <linearGradient id="land" x2="0.8" y2="1">
+      <stop stop-color="#d9c28c"/><stop offset="0.55" stop-color="#b4ab78"/><stop offset="1" stop-color="#a08862"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#e9d6a7" stroke-width="0.5" opacity="0.32"/>
+    </pattern>
+    <pattern id="hatch" width="5" height="5" patternUnits="userSpaceOnUse">
+      <path d="M0 5L5 0" stroke="#5b523b" stroke-width="0.3" opacity="0.38"/>
+    </pattern>
+    <g id="peak">
+      <path d="M-8 5L-1-8 5 1 9 5Z" fill="#807b5f" stroke="#655d48" stroke-width="0.7"/>
+      <path d="M-4-2L-1-8 2-3 0-4-1-2Z" fill="#f1e2b6"/>
+    </g>
+    <g id="pine">
+      <path d="M0-5L3 1H1L4 4H-4L-1 1H-3Z" fill="#5f7354"/>
+      <path d="M0 3V5" stroke="#685c43"/>
+    </g>
+    <path id="west-shore" d="M153 158l17-12 31 2 21-11 26 2 26-13 21 4 27-7 30 16 31-8 23 13 10 23 24 10-8 27 18 16-1 34 20 17-4 28-24 11-8 19 13 13-3 36-14 18-24 4-11 23-28 9-22-14-24 7-25 28-23 2-23-10-8-22-28-17-22 8-14-18-18 3-17-31 15-25-9-16 10-31-20-31 9-27-20-17-4-24 13-17-12-12z"/>
+    <path id="east-shore" d="M680 100l25-8 25 13 21-10 28 22 20 1 11 19 32 8 14 21-11 19-27 3 12 25-13 13 6 24-13 21 9 13-18 37 14 23 26 15-3 31-23 14-4 21 22 25-7 18-23 4-23-21-19 9-19-15-34 9-16-18-4-23-30-10 4-30-25-17 2-30-22-25 13-23-9-28 10-24-20-26 13-35 26-15-7-21 18-18 22 5z"/>
+    <clipPath id="land-mask"><use href="#west-shore"/><use href="#east-shore"/></clipPath>
+  </defs>
+
+  <path fill="url(#water)" d="M0 0H1000V600H0z"/>
+  <path fill="url(#grid)" d="M0 0H1000V600H0z"/>
+  <g fill="none" stroke="#80a096" stroke-width="1.3" opacity="0.38">
+    <path d="M48 117q46 14 93 0M441 110q49 18 94 1m-27 13q57 19 102 1M95 505q51 13 95-1m196 10q40 11 87 0m422-355q31 10 64 0M527 399q29 10 54 0m-34 15q36 11 67 0"/>
+    <path d="M167 417q31 20 74 31m197-292q35 20 43 42m137-40q10-23 48-35m184 307q20 24 1 49"/>
+  </g>
+  <g fill="url(#land)" stroke-linejoin="round">
+    <g stroke="#769482" stroke-width="12" opacity="0.25"><use href="#west-shore"/><use href="#east-shore"/></g>
+    <g stroke="#dfc995" stroke-width="2.5"><use href="#west-shore"/><use href="#east-shore"/></g>
+    <path d="M114 327l12-12 11 5 6 16-13 11-14-4zM860 317l14-7 15 13-3 19-13 2-12-12zM174 480l16-14 19 12 1 13-26 7z"/>
+  </g>
+  <g clip-path="url(#land-mask)">
+    <g opacity="0.7">
+      <path d="M134 210Q210 185 263 220T390 237L452 218V287Q402 312 341 278T212 294L148 310Z" fill="#89916b"/>
+      <path d="M226 135Q263 151 310 147T407 190L435 213 387 226 343 195 291 188 241 214 169 183Z" fill="#a49f76"/>
+      <path d="M244 366Q295 328 374 366L440 343 424 445 361 438 320 423 257 459Z" fill="#c2a374"/>
+      <path d="M639 155Q695 138 749 188T854 201L829 290 797 305Q753 263 728 248T641 244Z" fill="#82916b"/>
+      <path d="M677 364Q719 315 786 359L833 341 847 435 802 472 757 425 690 447Z" fill="#c7a276"/>
+    </g>
+    <path d="M150 178Q200 203 247 182T347 156 423 194m-269-6q69 39 106 12t92-26 70 34m-269-7q59 35 113 13t87-24 69 33m-242 107q54-26 112-1t109 16m-217 2q62-21 106-1t97 13m280-173q54-17 103 30t79 8m-187-26q57-15 103 33t90 10m-151 97q50-27 98 16t63-3m-144 6q34-17 80 23t62 3" fill="none" stroke="#736b55" stroke-width="0.8" opacity="0.55"/>
+    <path d="M188 135Q243 146 260 177T309 202 351 216 379 262 452 301M734 102q-11 42 14 76t-5 74 4 59 63 60" fill="none" stroke="#5e8883" stroke-width="3.5"/>
+    <path d="M165 301Q238 257 282 266T352 275 444 246m233 34q40 3 52 34t73 44" fill="none" stroke="#e3cb98" stroke-width="2.1" stroke-dasharray="4 2"/>
+    <use href="#peak" transform="translate(187 181) scale(1)"/>
+<use href="#peak" transform="translate(205 174) scale(1.5)"/>
+<use href="#peak" transform="translate(222 180) scale(1)"/>
+<use href="#peak" transform="translate(313 159) scale(1.2)"/>
+<use href="#peak" transform="translate(333 154) scale(1.4)"/>
+<use href="#peak" transform="translate(350 163) scale(1.1)"/>
+<use href="#peak" transform="translate(353 182) scale(0.8)"/>
+<use href="#peak" transform="translate(291 363) scale(1.2)"/>
+<use href="#peak" transform="translate(313 354) scale(1.6)"/>
+<use href="#peak" transform="translate(335 370) scale(1.1)"/>
+<use href="#peak" transform="translate(690 179) scale(1.2)"/>
+<use href="#peak" transform="translate(711 173) scale(1.5)"/>
+<use href="#peak" transform="translate(734 193) scale(0.9)"/>
+<use href="#peak" transform="translate(758 402) scale(1.2)"/>
+<use href="#peak" transform="translate(778 404) scale(1.3)"/>
+<use href="#peak" transform="translate(803 424) scale(1)"/>
+    <use href="#pine" transform="translate(186 241) scale(1)"/>
+<use href="#pine" transform="translate(196 234) scale(1)"/>
+<use href="#pine" transform="translate(201 248) scale(1)"/>
+<use href="#pine" transform="translate(213 242) scale(1)"/>
+<use href="#pine" transform="translate(223 230) scale(1)"/>
+<use href="#pine" transform="translate(409 250) scale(1.4)"/>
+<use href="#pine" transform="translate(413 259) scale(1.1)"/>
+<use href="#pine" transform="translate(421 246) scale(1.2)"/>
+<use href="#pine" transform="translate(424 256) scale(1)"/>
+<use href="#pine" transform="translate(664 228) scale(1.3)"/>
+<use href="#pine" transform="translate(677 224) scale(1.2)"/>
+<use href="#pine" transform="translate(680 234) scale(1)"/>
+<use href="#pine" transform="translate(691 225) scale(1.4)"/>
+<use href="#pine" transform="translate(696 237) scale(1)"/>
+<use href="#pine" transform="translate(799 260) scale(1)"/>
+<use href="#pine" transform="translate(809 258) scale(1.2)"/>
+<use href="#pine" transform="translate(811 267) scale(1.1)"/>
+  </g>
+
+  <g clip-path="url(#land-mask)">
+    <g fill="none" stroke="#766e53" stroke-width="0.6" opacity="0.65">
+      <path d="M162 329q42-31 84-18t76 24 84-18m-237 22q43-26 72-15t78 23 81-15m-168 33q36-20 86 2t53 1m297-78q50-4 67 35t67 39m-131-62q50 0 60 30t60 40"/>
+    </g>
+    <use href="#pine" transform="translate(276 280) scale(0.62)"/>
+<use href="#pine" transform="translate(281 284) scale(0.68)"/>
+<use href="#pine" transform="translate(286 279) scale(0.7)"/>
+<use href="#pine" transform="translate(290 284) scale(0.58)"/>
+<use href="#pine" transform="translate(295 281) scale(0.7)"/>
+<use href="#pine" transform="translate(318 315) scale(0.66)"/>
+<use href="#pine" transform="translate(324 311) scale(0.66)"/>
+<use href="#pine" transform="translate(330 315) scale(0.7)"/>
+<use href="#pine" transform="translate(343 323) scale(0.75)"/>
+<use href="#pine" transform="translate(350 318) scale(0.78)"/>
+<use href="#pine" transform="translate(698 304) scale(0.7)"/>
+<use href="#pine" transform="translate(703 302) scale(0.65)"/>
+<use href="#pine" transform="translate(710 305) scale(0.7)"/>
+<use href="#pine" transform="translate(716 306) scale(0.7)"/>
+    <path d="M217 297q16-17 28-7t10 18q-12 14-26 9t-12-20zM713 384q11-20 25-17t14 15q-15 18-28 17t-11-15z" fill="#6b9990" stroke="#bfc49a" stroke-width="1"/>
+  </g>
+
+
+</svg>
