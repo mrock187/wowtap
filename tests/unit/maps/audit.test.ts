@@ -5,6 +5,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { auditMaps } from '../../../scripts/maps/audit'
+import { freezeSchedule } from '../../../src/engine/schedule'
 import { coordinateFixture } from '../../fixtures/coordinates'
 
 let root: string
@@ -74,5 +75,47 @@ describe('map asset audit', () => {
     ]))
     const assetPath = join(root, 'public', report.assets[0].layer.image)
     expect(await readFile(assetPath, 'utf8')).toBe(fixtureSvg)
+  })
+
+  it('audits historical assets outside the current atlas and detects a changed image', async () => {
+    const content = structuredClone(coordinateFixture)
+    const build = '1.60.1.70245'
+    const digest = createHash('sha256').update(fixtureSvg).digest('hex')
+    content.atlas.build = build
+    content.dataset.build = build
+    for (const layer of content.atlas.layers) {
+      layer.rights = 'approved'
+      layer.assetSha256 = digest
+      layer.source = { ...layer.source, build }
+    }
+    content.atlas.layers[0].uiMapId = 947
+    content.atlas.layers[0].image = 'maps/old-world.svg'
+    content.atlas.layers[1].uiMapId = 1414
+    content.atlas.layers[4].uiMapId = 1415
+    const location = content.dataset.locations[0]
+    content.dataset.locations = Array.from({ length: 5 }, (_, index) => ({
+      ...location,
+      id: `qa-${index}`,
+      name: `QA ${index}`,
+      source: { ...location.source, build },
+    }))
+    const published = freezeSchedule(content, { startDate: '2026-01-01', days: 1, version: 'first' })
+    content.atlas.layers[0].image = 'maps/world.svg'
+    const schedule = freezeSchedule(content, {
+      startDate: '2026-01-02', days: 1, version: 'second', publishedThrough: '2026-01-01',
+    }, published)
+    await mkdir(join(root, 'public', 'game'), { recursive: true })
+    await mkdir(join(root, 'public', 'maps'), { recursive: true })
+    const images = [...content.atlas.layers.map(layer => layer.image), 'maps/old-world.svg']
+    await Promise.all(images.map(image => writeFile(join(root, 'public', image), fixtureSvg)))
+    await writeFile(join(root, 'DATA_PROVENANCE.md'), images.map(image => `${image} ${digest}`).join('\n'))
+    await writeFile(join(root, 'public', 'game', 'atlas.json'), JSON.stringify(content.atlas))
+    await writeFile(join(root, 'public', 'game', 'schedule.json'), JSON.stringify(schedule))
+
+    expect((await auditMaps(root, false, dimensions)).issues).toEqual([])
+    await writeFile(join(root, 'public', 'maps', 'old-world.svg'), fixtureSvg + '\n')
+    expect((await auditMaps(root, false, dimensions)).issues).toContainEqual({
+      severity: 'BLOCKED', message: 'maps/old-world.svg: asset bytes must match the manifest assetSha256',
+    })
   })
 })

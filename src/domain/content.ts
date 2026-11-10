@@ -25,6 +25,7 @@ const layerSchema = z.object({
   height: z.number().int().positive(),
   maxZoom: z.number().min(1).max(32),
   image: z.string().regex(/^maps\/(?:[a-z0-9-]+\/)*[a-z0-9-]+\.(webp|avif|png|jpg|svg)$/),
+  assetSha256: z.string().regex(/^[a-f0-9]{64}$/).optional(),
   rights: z.enum(['approved', 'local-only', 'fixture']),
   source: sourceSchema,
 }).strict()

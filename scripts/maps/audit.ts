@@ -4,7 +4,9 @@ import { lstat, readFile, readdir } from 'node:fs/promises'
 import { extname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { mapManifestSchema, type MapLayer } from '../../src/domain/content'
+import { parseSchedule } from '../../src/engine/schedule'
 import { coordinateFixture } from '../../tests/fixtures/coordinates'
+import { readJson } from '../data/read-json'
 
 const maxFiles = 20_000
 const maxFileBytes = 25 * 1024 ** 2
@@ -84,7 +86,7 @@ export async function auditMaps(root: string, fixture: boolean, checkImage: Imag
   let manifest: unknown = coordinateFixture.atlas
   if (!fixture) {
     try {
-      manifest = JSON.parse(await readFile(join(root, 'public', 'game', 'atlas.json'), 'utf8'))
+      manifest = await readJson(join(root, 'public', 'game', 'atlas.json'))
     } catch (error) {
       issues.push(missing(error)
         ? { severity: 'BLOCKED', message: 'Missing public/game/atlas.json and its approved Forever calibration' }
@@ -101,7 +103,29 @@ export async function auditMaps(root: string, fixture: boolean, checkImage: Imag
     return report()
   }
 
-  const { layers } = parsed.data
+  const layersByImage = new Map(parsed.data.layers.map(layer => [layer.image, layer]))
+  if (!fixture) {
+    try {
+      const schedule = await readJson(join(root, 'public', 'game', 'schedule.json'), true)
+      if (schedule !== undefined) {
+        for (const season of parseSchedule(schedule).seasons) {
+          for (const layer of season.content.atlas.layers) {
+            const current = layersByImage.get(layer.image)
+            if (!current) {
+              layersByImage.set(layer.image, layer)
+            } else if (current.assetSha256 !== layer.assetSha256
+              || current.width !== layer.width || current.height !== layer.height
+              || current.rights !== layer.rights) {
+              issues.push({ severity: 'FAIL', message: `${layer.image}: historical asset metadata changed` })
+            }
+          }
+        }
+      }
+    } catch (error) {
+      issues.push({ severity: 'FAIL', message: `Cannot audit frozen schedule maps: ${message(error)}` })
+    }
+  }
+  const layers = [...layersByImage.values()]
   const listed = new Set(layers.map(layer => layer.image))
   for (const file of files.keys()) {
     if (!listed.has(file)) issues.push({ severity: 'FAIL', message: `${file}: unlisted map asset` })
@@ -114,11 +138,11 @@ export async function auditMaps(root: string, fixture: boolean, checkImage: Imag
     } catch (error) {
       if (!missing(error)) throw error
     }
-    if (!layers.some(layer => layer.kind === 'world' && layer.uiMapId === 947)) {
+    if (!parsed.data.layers.some(layer => layer.kind === 'world' && layer.uiMapId === 947)) {
       issues.push({ severity: 'BLOCKED', message: 'The Forever world overview (UiMap 947) is absent' })
     }
     for (const id of [1414, 1415]) {
-      if (!layers.some(layer => layer.kind === 'continent' && layer.uiMapId === id)) {
+      if (!parsed.data.layers.some(layer => layer.kind === 'continent' && layer.uiMapId === id)) {
         issues.push({ severity: 'BLOCKED', message: `Required Forever continent UiMap ${id} is absent` })
       }
     }
@@ -141,6 +165,9 @@ export async function auditMaps(root: string, fixture: boolean, checkImage: Imag
     const data = await readFile(join(folder, layer.image.slice('maps/'.length)))
     const sha256 = createHash('sha256').update(data).digest('hex')
     assets.push({ layer, bytes: size, sha256 })
+    if (!fixture && layer.assetSha256 !== sha256) {
+      issues.push({ severity: 'BLOCKED', message: `${layer.image}: asset bytes must match the manifest assetSha256` })
+    }
     if (!fixture && !provenance.some(line => line.includes(layer.image) && line.includes(sha256))) {
       issues.push({ severity: 'BLOCKED', message: `${layer.image}: record the image path and SHA-256 together in DATA_PROVENANCE.md` })
     }

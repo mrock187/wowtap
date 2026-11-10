@@ -9,7 +9,8 @@
         "docs/research/SOURCES.md",
         "DATA_PROVENANCE.md"
       ],
-      "blocker": null
+      "blocker": null,
+      "gate": "Source and hosting review"
     },
     "G1": {
       "status": "passed",
@@ -26,7 +27,8 @@
         "npm run build: 224.08 kB JS, 69.61 kB gzip",
         "npm run dev and local HTTP 200"
       ],
-      "blocker": null
+      "blocker": null,
+      "gate": "Clean install, lint, typecheck, production build, dev HTTP smoke"
     },
     "G2": {
       "status": "passed",
@@ -41,10 +43,11 @@
         "src/domain/atlas.ts",
         "npm run test: 9 coordinate and schema tests"
       ],
-      "blocker": null
+      "blocker": null,
+      "gate": "Map and location schemas and nested coordinate tests"
     },
-    "G3": {
-      "status": "blocked",
+    "G3Q": {
+      "status": "passed",
       "attempts": 1,
       "owner": "cartography",
       "dependencies": [
@@ -52,13 +55,28 @@
       ],
       "evidence": [
         "edfc5a9",
+        "Chromium decoded five fictional layers"
+      ],
+      "blocker": null,
+      "gate": "Fixture map decode, provenance and technical audit"
+    },
+    "G3": {
+      "status": "blocked",
+      "attempts": 1,
+      "owner": "cartography",
+      "dependencies": [
+        "G3Q"
+      ],
+      "evidence": [
+        "edfc5a9",
         "docs/research/MAPS.md",
         "QA audit: 5 files, 40,165 bytes"
       ],
-      "blocker": "No rights-cleared, calibrated Forever artwork or atlas manifest."
+      "blocker": "No rights-cleared, calibrated Forever artwork or atlas manifest.",
+      "gate": "Rights-approved, label-free real Forever atlas with calibrated layers"
     },
-    "G4": {
-      "status": "blocked",
+    "G4Q": {
+      "status": "passed",
       "attempts": 1,
       "owner": "locations",
       "dependencies": [
@@ -66,10 +84,25 @@
       ],
       "evidence": [
         "ffe0b95",
+        "Eight data intake tests passed"
+      ],
+      "blocker": null,
+      "gate": "Location intake and validation tests"
+    },
+    "G4": {
+      "status": "blocked",
+      "attempts": 1,
+      "owner": "locations",
+      "dependencies": [
+        "G4Q"
+      ],
+      "evidence": [
+        "ffe0b95",
         "docs/research/LOCATIONS.md",
         "Eight intake tests passed"
       ],
-      "blocker": "No audited, exact-build Forever answer coordinates aligned to the atlas."
+      "blocker": "No audited, exact-build Forever answer coordinates aligned to the atlas.",
+      "gate": "Verified exact-build answer coordinates and real coverage audit"
     },
     "G5": {
       "status": "passed",
@@ -83,14 +116,15 @@
         "docs/ENGINE.md",
         "38 engine tests passed"
       ],
-      "blocker": null
+      "blocker": null,
+      "gate": "UTC freeze, extension and scoring tests"
     },
     "G6": {
       "status": "passed",
       "attempts": 1,
       "owner": "map-ui",
       "dependencies": [
-        "G3",
+        "G3Q",
         "G5"
       ],
       "evidence": [
@@ -99,14 +133,15 @@
         "docs/qa/fixture-zone-desktop.png",
         "docs/qa/fixture-city-mobile.png"
       ],
-      "blocker": null
+      "blocker": null,
+      "gate": "Desktop and mobile map interaction and visual review"
     },
     "G7": {
       "status": "passed",
       "attempts": 1,
       "owner": "game-ui",
       "dependencies": [
-        "G4",
+        "G4Q",
         "G5",
         "G6"
       ],
@@ -114,7 +149,8 @@
         "64 unit tests",
         "4 Playwright game tests passed with isolated fictional fixtures"
       ],
-      "blocker": null
+      "blocker": null,
+      "gate": "Five-round play, persistence, history and sharing"
     },
     "G8": {
       "status": "passed",
@@ -128,29 +164,53 @@
         "12 Chromium browser tests",
         "Axe WCAG 2.0/2.1 A/AA reported zero violations on audited screens"
       ],
-      "blocker": null
+      "blocker": null,
+      "gate": "Browser regression, Axe, offline and concurrency checks"
     },
-    "G9": {
-      "status": "running",
+    "G9Q": {
+      "status": "passed",
       "attempts": 1,
       "owner": "lead",
       "dependencies": [
         "G8"
       ],
-      "evidence": [],
-      "blocker": null
+      "evidence": [
+        "npm run verify:qa",
+        "npm run pages:smoke",
+        "5 output files, 366,782 total bytes"
+      ],
+      "blocker": null,
+      "gate": "Clean build, size and static preview checks"
+    },
+    "G9": {
+      "status": "blocked",
+      "attempts": 1,
+      "owner": "lead",
+      "dependencies": [
+        "G3",
+        "G4",
+        "G9Q"
+      ],
+      "evidence": [
+        "npm run maps:audit",
+        "npm run data:validate",
+        "npm run pages:preflight"
+      ],
+      "blocker": "No official atlas, location dataset or frozen schedule in dist.",
+      "gate": "Release content and frozen season packaging"
     },
     "G10": {
-      "status": "pending",
+      "status": "blocked",
       "attempts": 0,
       "owner": "human",
       "dependencies": [
         "G9"
       ],
       "evidence": [],
-      "blocker": null
+      "blocker": "Requires passing G9, documented publication rights and user authorization to deploy.",
+      "gate": "Explicit rights approval and Pages publication authorization"
     }
   },
-  "lastUpdated": "2026-11-10T17:57:21.2470102Z",
-  "releaseState": "INCOMPLETE"
+  "lastUpdated": "2026-11-10T18:02:16.7101259Z",
+  "releaseState": "INCOMPLETE / PUBLICATION_BLOCKED"
 }

@@ -11,3 +11,9 @@ No third-party code, data files, or map images are included at this gate.
 | [Blizzard launch](https://worldofwarcraft.blizzard.com/en-us/news/24315820/world-of-warcraft-forever-now-live) and [legal FAQ](https://www.blizzard.com/en-us/legal/c1ae32ac-7ff9-4ac3-a03b-fc04b8697010/blizzard-legal-faq) | Confirmed the game edition and Zephras Isle. Reviewed the fansite policy for an explicit basis to host map textures in the game. | Version and rights reference. | Release requires a documented basis covering the specific atlas and derivative assets. |
 
 OpenMap describes its dungeon entrance points as ghost-return locations and may group nearby wings. A coordinate must match the location described by the question before it can become eligible.
+
+## Implementation inventory
+
+- `tests/fixtures/maps/`: five original fictional SVGs used by the isolated loopback QA server. Build 0.0.0.1 is a schema-test sentinel. Production inventory is zero Forever map assets, zero approved derivatives and zero verified answer entries. [Map evidence](docs/research/MAPS.md) · [Location evidence](docs/research/LOCATIONS.md)
+- `public/favicon.svg` and the compass interface ornament are original project graphics. They contain no imported Warcraft art.
+- A published image must have release approval, an exact-build atlas layer, and a SHA-256 recorded in both its manifest and this ledger. Retain each historical image at its frozen path and digest.

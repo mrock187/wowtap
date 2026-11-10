@@ -1,6 +1,7 @@
 import { parseSchedule, type FrozenSchedule } from '../engine/schedule'
 
 export async function loadSchedule(signal?: AbortSignal): Promise<FrozenSchedule | null> {
+  if (!__HAS_GAME_SCHEDULE__) return null
   const response = await fetch('/game/schedule.json', { signal, headers: { Accept: 'application/json' } })
   if (response.status === 404 || response.headers.get('content-type')?.startsWith('text/html')) return null
   if (!response.ok) throw new Error(`Atlas request failed (${response.status})`)
