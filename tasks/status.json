@@ -162,7 +162,7 @@
         "G7"
       ],
       "evidence": [
-        "67 unit tests",
+        "69 unit tests",
         "14 Chromium browser tests",
         "Axe WCAG 2.0/2.1 A/AA reported zero violations on audited screens"
       ],
@@ -179,7 +179,7 @@
       "evidence": [
         "npm run verify:qa",
         "npm run pages:smoke",
-        "5 output files, 367,091 total bytes, largest 355,445 bytes"
+        "5 output files, 368,615 total bytes, largest 355,654 bytes"
       ],
       "blocker": null,
       "gate": "Clean build, size and static preview checks"
@@ -213,7 +213,7 @@
       "gate": "Explicit rights approval and Pages publication authorization"
     }
   },
-  "lastUpdated": "2026-11-10T18:16:52.7668096Z",
+  "lastUpdated": "2026-11-10T18:36:39.2943360Z",
   "releaseState": "INCOMPLETE / PUBLICATION_BLOCKED",
   "localPreview": {
     "status": "passed",
@@ -224,7 +224,10 @@
     "evidence": [
       "npm run local:prepare",
       "Chromium real-source desktop and mobile five-round playthrough",
-      "docs/LOCAL_FOREVER.md"
-    ]
+      "docs/LOCAL_FOREVER.md",
+      "WDL hillshade and ocean mask render with unchanged schedule SHA-256",
+      "Map-first UI QA across desktop and mobile"
+    ],
+    "terrainViews": 3
   }
 }

@@ -11,3 +11,5 @@
 The software and real-content gates are recorded separately in `tasks/status.json`. Release preflight rejects unlisted images and compares the SHA-256 of every published map against the digest frozen into its season. Official seasons preserve historical asset paths. Browser tests use software fixtures served only by the loopback QA dev server.
 
 An optional layer `imageCrop` defines a normalized rectangle in the original image that aligns with the playable layer bounds. The renderer scales and clips the original plate against that rectangle. The atlas transform continues to score against canonical positions inside the playable bounds.
+
+The November 10 visual revision uses MapTap's map-first layout as a reference for a dark play surface, compact score and prominent target prompt. Local Forever gameplay now displays registered WDL-derived terrain. The visual layer shares the old atlas extent and leaves the frozen rounds, historical scores and accepted coordinates intact. [MapTap gameplay reference](https://maptap.gg/)

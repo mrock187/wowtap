@@ -1,62 +1,64 @@
-.atlas { min-width: 0; border: 1px solid #9a9277; border-radius: 8px; overflow: hidden; background: #e4d9ba; }
+.atlas { position: relative; min-width: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--panel-deep); }
 .map-toolbar {
+  position: absolute;
+  inset: 9px 9px auto;
+  z-index: 1;
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
+  align-items: start;
   gap: 5px;
-  min-height: 52px;
-  padding: 4px 8px;
-  color: #fff0c8;
-  background: #35443a;
+  color: var(--ink);
+  pointer-events: none;
 }
-.map-breadcrumb { margin: 0 auto 0 4px; font-size: .76rem; font-weight: 750; }
+.map-toolbar > * { pointer-events: auto; }
+.map-breadcrumb { margin-right: auto; padding: 7px 9px; border: 1px solid #435972; border-radius: 7px; background: #0b1728; font-size: .72rem; font-weight: 750; }
 .map-control {
   min-width: 44px;
   min-height: 44px;
-  border: 1px solid #8e9074;
-  border-radius: 4px;
-  background: #26362d;
-  color: #fff0c8;
-  font-size: .85rem;
+  border: 1px solid #435972;
+  border-radius: 7px;
+  background: #0b1728;
+  color: var(--ink);
+  font-size: .83rem;
   font-weight: 750;
   padding: 0 8px;
 }
-.map-control:hover:not(:disabled) { background: #4b5947; }
-.map-control:disabled { opacity: .62; }
-.map-toolbar :focus-visible, .map-canvas :focus-visible { outline-color: #ffda83; }
+.map-control:hover:not(:disabled) { background: #1a3450; }
+.map-control:disabled { color: #8ba0b8; }
 .map-zoom { display: flex; gap: 4px; }
-.map-canvas { position: relative; height: clamp(310px, 57vh, 640px); background: #283c38; }
+.map-canvas { position: relative; height: clamp(330px, calc(100dvh - 350px), 820px); background: #0c2748; }
 .atlas-viewport { width: 100%; height: 100%; display: block; cursor: crosshair; touch-action: none; user-select: none; }
 .atlas-viewport:active { cursor: grabbing; }
 .atlas-viewport:focus-visible { outline-offset: -4px; }
 .map-portal { cursor: pointer; outline: none; }
-.map-portal circle { fill: #29352d; stroke: #ffdf9a; stroke-width: 2; }
-.map-portal path { fill: none; stroke: #ffdf9a; stroke-width: 2; stroke-linecap: round; pointer-events: none; }
-.map-portal:hover circle, .map-portal:focus-visible circle { fill: #66552e; stroke: #fff3bd; stroke-width: 4; }
+.map-portal circle { fill: #0a202e; stroke: var(--accent); stroke-width: 2; }
+.map-portal path { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
+.map-portal:hover circle, .map-portal:focus-visible circle { fill: #195666; stroke: #b2fffa; stroke-width: 4; }
 .map-pin, .map-answer-line, .map-answer-point, .map-answer-area, .map-crosshair { pointer-events: none; }
-.map-pin path { fill: #9d3326; stroke: #fff2d0; stroke-width: 2; }
-.map-pin circle { fill: #fff2d0; }
-.map-answer-line { stroke: #fff3b5; stroke-width: 2; stroke-dasharray: 5 4; vector-effect: non-scaling-stroke; }
-.map-answer-point, .map-answer-area { fill: #f9cf73; stroke: #412f1a; stroke-width: 2; vector-effect: non-scaling-stroke; }
+.map-pin path { fill: #dc5166; stroke: #fff0f3; stroke-width: 2; }
+.map-pin circle { fill: #fff0f3; }
+.map-answer-line { stroke: #ffe4a0; stroke-width: 2; stroke-dasharray: 5 4; vector-effect: non-scaling-stroke; }
+.map-answer-point, .map-answer-area { fill: #ffcd66; stroke: #271e11; stroke-width: 2; vector-effect: non-scaling-stroke; }
 .map-answer-area { fill-opacity: .42; }
 .map-crosshair { opacity: 0; }
-.map-crosshair path { stroke: #fff7d8; stroke-width: 2; }
+.map-crosshair path { stroke: #fff; stroke-width: 2; }
 .atlas-viewport:focus-visible .map-crosshair { opacity: 1; }
-.map-caption { padding: 9px 12px; color: #393a2e; font-size: .78rem; line-height: 1.4; }
+.map-caption { padding: 7px 10px; color: var(--muted); font-size: .69rem; line-height: 1.35; }
 .map-message {
   position: absolute;
   inset: 50% auto auto 50%;
   translate: -50% -50%;
   padding: 13px 17px;
-  background: #27382f;
-  color: #fff0c8;
-  border-radius: 6px;
+  background: #0c1728;
+  color: var(--ink);
+  border-radius: 8px;
   text-align: center;
   white-space: nowrap;
-  box-shadow: 0 8px 26px #121c1570;
+  box-shadow: 0 8px 26px #0006;
 }
 .map-message button { margin-top: 8px; }
 @media (max-width: 680px) {
-  .map-canvas { height: clamp(236px, 37vh, 360px); }
-  .map-breadcrumb { font-size: .7rem; }
+  .map-canvas { height: clamp(300px, calc(100dvh - 280px), 490px); }
+  .map-toolbar { inset: 6px 6px auto; gap: 4px; flex-wrap: wrap; }
+  .map-breadcrumb { font-size: .62rem; }
+  .map-zoom { margin-left: auto; }
 }

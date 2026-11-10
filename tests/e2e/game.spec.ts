@@ -82,7 +82,7 @@ test('finishes five rounds, survives refreshes, shares, and opens the next UTC d
     if (round === 0) {
       await page.reload()
       await page.getByRole('button', { name: 'Resume expedition' }).click()
-      await expect(reveal.locator('.running-total strong')).toHaveText('5,000 / 25,000')
+      await expect(page.locator('.running-total strong')).toHaveText('5,000 / 25,000')
       await page.screenshot({ path: testInfo.outputPath('game-reveal.png') })
     }
     await page.getByRole('button', { name: round === 4 ? 'See results' : 'Next round' }).click()

@@ -19,3 +19,5 @@ The worktree manager could not attach this Windows checkout. Cartography, data a
 ## Real Forever local preview
 
 The local-only snapshot is playable with `npm run dev:forever` after `npm run local:prepare`. It has three real unlabeled plates and 97 source-backed points on the two continents, pinned to Forever build 1.60.1.69913. The public release remains blocked. [Local preview and coverage](LOCAL_FOREVER.md)
+
+The local preview now uses a map-first dark interface and three calibrated terrain-only views. Desktop and mobile real-source play-throughs passed, alongside 69 unit and 14 browser tests. [Terrain and coverage notes](LOCAL_FOREVER.md)

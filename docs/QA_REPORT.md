@@ -41,3 +41,9 @@ The Pages Free size audit passed against 20,000 files and 25 MiB per file. The p
 `npm run local:prepare` produced three unlabeled real-source plates and a 97-location pool. Chromium completed all five rounds on desktop 1440 × 900 and mobile 390 × 844 with 25,000 points and zero page or network errors. Visually inspected the world and continent screenshots. The bundle and screenshot files are stored under the Git-ignored `.local/` directory. [Source registration and preview commands](LOCAL_FOREVER.md)
 
 The post-preview `npm run verify:qa` passed 67 unit tests and 14 browser tests. The production package stayed at five files (367,091 bytes) and passed the loopback smoke test. The release check still reported an empty official content package. Repeating local preparation preserved the schedule SHA-256. A direct request to the local source cache returned HTTP 403.
+
+## Map-first interface and terrain, November 10, 2026
+
+The local terrain build generated three PNGs (2,071,725 bytes total) from the two exact-build WDL files. The schedule digest stayed byte-for-byte identical. Real-source Chromium play-throughs at 1440 × 900 and 390 × 844 scored 25,000 with zero page or network errors and confirmed the main confirmation control fits in each opening viewport. The updated real screenshots remain in the ignored local preview directory.
+
+`npm run verify:qa` passed 69 unit tests, 14 Chromium cases, the static preflight and production preview. The production package stayed separate and measured 368,615 bytes across five files. [Desktop QA round](qa/map-first-world-desktop.png) · [Mobile QA reveal](qa/map-first-reveal-mobile.png)

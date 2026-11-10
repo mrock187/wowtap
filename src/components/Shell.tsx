@@ -23,7 +23,7 @@ export function HelpButton() {
         <p className="eyebrow">Field guide</p>
         <h2 id={title}>Read the terrain</h2>
         <ol>
-          <li>Find each of the five named places on the unlabeled atlas. Coastlines, roads, and buildings are your clues.</li>
+          <li>Find each of the five named places on the unlabeled atlas. Follow the coastlines, hills, and other landforms.</li>
           <li>Drag to pan and scroll or pinch to zoom. Use the detail controls to open a region, zone, or city.</li>
           <li>Place a pin and confirm. Closer guesses earn up to 5,000 points. For precision targets, use the city map to earn full credit.</li>
         </ol>
@@ -56,16 +56,17 @@ export function Shell({ children, actions }: { children: ReactNode; actions?: Re
   )
 }
 
-export function Cover({ children }: { children: ReactNode }) {
+export function Cover({ children, map }: { children: ReactNode; map?: string }) {
   return (
     <section className="cover" aria-labelledby="cover-title">
+      {map && <img className="cover-map" src={map} alt="" />}
       <div className="cover-copy">
         <p className="eyebrow"><span aria-hidden="true">✦</span> A daily expedition</p>
-        <h1 id="cover-title">How well do you<br className="cover-break" /> know Azeroth?</h1>
-        <p className="cover-deck">Five places. One unlabeled map. Follow the terrain and trust your memory.</p>
+        <h1 id="cover-title">Find your way<br className="cover-break" /> across Azeroth.</h1>
+        <p className="cover-deck">Five places. One unlabeled map. How close can you get?</p>
         {children}
       </div>
-      <div className="cover-ornament" aria-hidden="true"><Compass size={312} /></div>
+      {!map && <div className="cover-ornament" aria-hidden="true"><Compass size={312} /></div>}
     </section>
   )
 }

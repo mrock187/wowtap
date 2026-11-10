@@ -56,7 +56,8 @@ export function Expedition({ puzzle, record, practice, onAction, onReturn }: Exp
         <p>{practice ? 'Practice · ' : ''}<time dateTime={puzzle.date}>{formatDate(puzzle.date)}</time> · UTC</p>
       </div>
       <div className="question">
-        <div>
+        <div className="running-total score-tile"><span>Score</span><strong>{number(total)} <small>/ 25,000</small></strong></div>
+        <div className="question-prompt">
           <p className="eyebrow">Round {round + 1} of 5 <span aria-hidden="true">·</span> {category[location.category]}</p>
           <h1 ref={title} tabIndex={-1}>{location.name}</h1>
         </div>
@@ -77,22 +78,26 @@ export function Expedition({ puzzle, record, practice, onAction, onReturn }: Exp
           reveal={score && { mapId: location.mapId, answers: location.answers, closest: score.answer }}
         />
         <aside className="round-panel" aria-label={record.revealing ? 'Round result' : 'Pin and confirm'}>
-          <p className="eyebrow">{record.revealing ? 'Location revealed' : 'Your guess'}</p>
           {score ? (
             <>
-              <div className="round-score"><strong>{number(score.points)}</strong><span> / 5,000</span></div>
-              <p>{score.error < .05 ? 'On the mark' : `${number(Math.round(score.error * 10) / 10)} atlas units away`}</p>
-              {score.precisionCapped && <p className="round-note">The detailed map earns full precision for this location.</p>}
-              {score.differentContinent && <p className="round-note">Your pin was on a different landmass.</p>}
-              <p className="round-note">{location.explanation}</p>
+              <div className="round-copy">
+                <p className="eyebrow">Location revealed</p>
+                <div className="round-score"><strong>{number(score.points)}</strong><span> / 5,000</span></div>
+                <p>{score.error < .05 ? 'On the mark' : `${number(Math.round(score.error * 10) / 10)} atlas units away`}</p>
+                {score.precisionCapped && <p className="round-note">The detailed map earns full precision for this location.</p>}
+                {score.differentContinent && <p className="round-note">Your pin was on a different landmass.</p>}
+                <p className="round-note">{location.explanation}</p>
+              </div>
               <button className="button primary" onClick={() => onAction({ type: 'next', round: count })}>
                 {count === 5 ? 'See results' : 'Next round'} <span aria-hidden="true">→</span>
               </button>
             </>
           ) : (
             <>
-              <h2>{record.pending ? 'Pin placed' : 'Mark your location'}</h2>
-              <p>{record.pending ? 'Move your pin anywhere on the map until you’re ready.' : 'Tap the atlas to drop a pin. Use the detailed maps for a closer look.'}</p>
+              <div className="round-copy">
+                <h2>{record.pending ? 'Pin placed' : 'Tap the map to guess'}</h2>
+                <p>{record.pending ? 'Tap again to move your pin.' : 'Drag to pan or zoom in for a closer look.'}</p>
+              </div>
               <button
                 className="button primary"
                 disabled={!record.pending}
@@ -100,7 +105,6 @@ export function Expedition({ puzzle, record, practice, onAction, onReturn }: Exp
               >Confirm pin</button>
             </>
           )}
-          <div className="running-total"><span>Expedition total</span><strong>{number(total)} / 25,000</strong></div>
         </aside>
       </div>
     </section>

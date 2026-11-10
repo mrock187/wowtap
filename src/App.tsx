@@ -58,6 +58,8 @@ export function App() {
   const stats = streaks(completed.map(puzzle => puzzle.date), today)
   const qa = import.meta.env.DEV && import.meta.env.MODE === 'qa'
   const localForever = import.meta.env.DEV && import.meta.env.MODE === 'local-forever'
+  const world = todayPuzzle?.atlas.layers.find(layer => layer.kind === 'world')
+  const coverMap = world && (localForever ? `/terrain/${world.uiMapId}.png` : `/${world.image}`)
 
   function start() {
     if (!todayPuzzle) return
@@ -126,7 +128,7 @@ export function App() {
           }}
         />
       ) : (
-        <Cover>
+        <Cover map={coverMap}>
           {todayPuzzle ? (
             <div className="cover-status">
               <p className="eyebrow"><time dateTime={today}>{formatDate(today)}</time> · UTC</p>
