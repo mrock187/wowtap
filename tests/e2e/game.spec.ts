@@ -92,7 +92,7 @@ test('finishes five rounds, survives refreshes, shares, and opens the next UTC d
   await page.screenshot({ path: testInfo.outputPath('game-results.png') })
   await page.getByRole('button', { name: 'Share result' }).click()
   await expect(page.getByLabel('Copy your spoiler-free result')).toHaveValue(
-    `Azeroth Pinpoint ${qaDate} | 25000/25000 | 🟩🟩🟩🟩🟩`,
+    `WoWtap ${qaDate} | 25000/25000 | 🟩🟩🟩🟩🟩`,
   )
   await page.reload()
   await expect(page.getByRole('button', { name: 'View today’s result' })).toBeVisible()

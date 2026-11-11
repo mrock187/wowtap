@@ -25,3 +25,13 @@ The local-only workflow loads the three OpenMap cleaned overview plates and sele
 ## Terrain-only presentation
 
 The local preview renders three hillshade plates using the build-pinned WDL sources documented in [Local WoW: Forever preview](docs/LOCAL_FOREVER.md). Source files, generated rasters, and local captures live under the ignored `.local/terrain/` and `.local/forever/` paths. Only terrain heights and ocean masks contribute to the basemap.
+
+## WoWtap publication authorization
+
+On November 10, 2026 the project owner requested publication on GitHub Pages, following the instruction to proceed with the artwork despite the earlier rights checkpoint. The published package contains the generated WDL terrain rasters and the reviewed AreaPOI dataset. Asset status is recorded as `user-authorized`. This records the owner's publication instruction and leaves upstream ownership and terms with their original sources. The cleaned OpenMap plates stay in the ignored local cache.
+
+| Published image | SHA-256 |
+| --- | --- |
+| maps/forever-69913-terrain-v1/947.png | f39d76b1366559f519574c8b384aca12b54457a49932e524680d9e4b3c1e90c5 |
+| maps/forever-69913-terrain-v1/1414.png | 55c2219022ff6437ebb80a1029d4d79cc88a25caa58038cf6be42f8cfdbfd64f |
+| maps/forever-69913-terrain-v1/1415.png | a5e9a0b3174458c698e233accc8ba6d44a397bb61f12bc917f7fef41dc5a1e8e |

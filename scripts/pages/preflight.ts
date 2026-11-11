@@ -80,7 +80,7 @@ async function check(root: string, qa: boolean) {
   const publishedImages = new Map<string, string>()
   for (const season of schedule.seasons) {
     for (const layer of season.content.atlas.layers) {
-      if (layer.rights !== 'approved' || !layer.assetSha256 || layer.source.build.startsWith('0.')) {
+      if (!['approved', 'user-authorized'].includes(layer.rights) || !layer.assetSha256 || layer.source.build.startsWith('0.')) {
         throw new Error(`Missing release evidence for ${layer.image}`)
       }
       const previous = publishedImages.get(layer.image)
@@ -94,7 +94,7 @@ async function check(root: string, qa: boolean) {
     }
   }
   if (mapFiles.some(path => !publishedImages.has(path))) throw new Error('Unlisted map image in output')
-  console.log(`PASS static package and ${publishedImages.size} frozen atlas images. Publication also requires documented rights and explicit authorization.`)
+  console.log(`PASS static package and ${publishedImages.size} frozen atlas images.`)
 }
 
 const args = process.argv.slice(2)

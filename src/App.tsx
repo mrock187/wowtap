@@ -59,7 +59,7 @@ export function App() {
   const qa = import.meta.env.DEV && import.meta.env.MODE === 'qa'
   const localForever = import.meta.env.DEV && import.meta.env.MODE === 'local-forever'
   const world = todayPuzzle?.atlas.layers.find(layer => layer.kind === 'world')
-  const coverMap = world && (localForever ? `/terrain/${world.uiMapId}.png` : `/${world.image}`)
+  const coverMap = world && import.meta.env.BASE_URL + (localForever ? `terrain/${world.uiMapId}.png` : world.image)
 
   function start() {
     if (!todayPuzzle) return

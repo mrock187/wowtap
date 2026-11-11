@@ -24,10 +24,12 @@ const layerSchema = z.object({
   imageCrop: boundsSchema.optional(),
   width: z.number().int().positive(),
   height: z.number().int().positive(),
+  imageWidth: z.number().int().positive().optional(),
+  imageHeight: z.number().int().positive().optional(),
   maxZoom: z.number().min(1).max(32),
   image: z.string().regex(/^maps\/(?:[a-z0-9-]+\/)*[a-z0-9-]+\.(webp|avif|png|jpg|svg)$/),
   assetSha256: z.string().regex(/^[a-f0-9]{64}$/).optional(),
-  rights: z.enum(['approved', 'local-only', 'fixture']),
+  rights: z.enum(['approved', 'user-authorized', 'local-only', 'fixture']),
   source: sourceSchema,
 }).strict()
 

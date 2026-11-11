@@ -35,6 +35,6 @@ describe('local journal', () => {
 
   it('shares exactly the date, total and five symbols', () => {
     expect(shareText('2026-11-10', [5000, 4250, 1500, 700, 5000]))
-      .toBe('Azeroth Pinpoint 2026-11-10 | 16450/25000 | 🟩🟨🟧⬛🟩')
+      .toBe('WoWtap 2026-11-10 | 16450/25000 | 🟩🟨🟧⬛🟩')
   })
 })

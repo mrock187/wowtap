@@ -252,7 +252,7 @@ export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
           <g clipPath={`url(#${clipId})`}>
           <image
             key={`${layer.id}:${retry}`}
-            href={`/${image}${retry ? `?retry=${retry}` : ''}`}
+            href={`${import.meta.env.BASE_URL}${image}${retry ? `?retry=${retry}` : ''}`}
             x={extent.left - cropLeft * imageWidth} y={extent.top - cropTop * imageHeight}
             width={imageWidth} height={imageHeight}
             preserveAspectRatio="none"

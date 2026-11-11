@@ -13,6 +13,7 @@ export default defineConfig(({ command, mode, isPreview }) => {
   }
   const hasSchedule = qa || forever || existsSync(new URL('./public/game/schedule.json', import.meta.url))
   return {
+    base: process.env.PAGES_BASE_PATH ?? '/',
     define: { __HAS_GAME_SCHEDULE__: JSON.stringify(hasSchedule) },
     plugins: [react(), qa && qaFixtures(), forever && localForever()],
     server: {

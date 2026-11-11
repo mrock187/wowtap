@@ -20,7 +20,7 @@ try {
     requests.add(request.url())
     if (new URL(request.url()).origin !== origin) errors.push(`Unexpected origin: ${request.url()}`)
   })
-  const response = await page.goto(origin)
+  const response = await page.goto(origin + (process.env.PAGES_BASE_PATH ?? '/'))
   if (response?.status() !== 200) throw new Error('Production preview did not return HTTP 200')
   const hasSchedule = existsSync(new URL('../../dist/game/schedule.json', import.meta.url))
   if (hasSchedule) {

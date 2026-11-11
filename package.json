@@ -1,5 +1,5 @@
 {
-  "name": "azeroth-pinpoint",
+  "name": "wowtap",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -23,7 +23,8 @@
     "verify": "npm run verify:qa && npm run maps:audit && npm run data:validate && npm run pages:preflight",
     "pages:smoke": "tsx scripts/pages/smoke.ts",
     "local:prepare": "tsx scripts/local/prepare.ts",
-    "dev:forever": "vite --mode local-forever --port 4175"
+    "dev:forever": "vite --mode local-forever --port 4175",
+    "publish:prepare": "tsx scripts/pages/stage.ts"
   },
   "dependencies": {
     "react": "^19.2.0",

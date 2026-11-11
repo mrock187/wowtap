@@ -42,7 +42,7 @@ export function Shell({ children, actions }: { children: ReactNode; actions?: Re
         <div className="masthead-inner">
           <div className="brand">
             <Compass />
-            <div><strong>Azeroth Pinpoint</strong><span>THE DAILY ATLAS</span></div>
+            <div><strong>WoWtap</strong><span>THE DAILY ATLAS</span></div>
           </div>
           <nav aria-label="Game information"><HelpButton />{actions}</nav>
         </div>

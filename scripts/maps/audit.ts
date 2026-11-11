@@ -149,7 +149,8 @@ export async function auditMaps(root: string, fixture: boolean, checkImage: Imag
   }
 
   for (const layer of layers) {
-    if (layer.rights !== (fixture ? 'fixture' : 'approved')) {
+    const permitted = fixture ? ['fixture'] : ['approved', 'user-authorized']
+    if (!permitted.includes(layer.rights)) {
       issues.push({ severity: 'BLOCKED', message: `${layer.image}: unexpected asset rights status "${layer.rights}"` })
     }
     if (!fixture && layer.source.build.startsWith('0.')) {
@@ -176,8 +177,10 @@ export async function auditMaps(root: string, fixture: boolean, checkImage: Imag
       const mime = mimeTypes[extname(layer.image)]
       if (mime === 'image/svg+xml') inspectSvg(data)
       const { width, height } = await checkImage(data, mime)
-      if (width !== layer.width || height !== layer.height) {
-        throw new Error(`decoded ${width}×${height}, manifest declares ${layer.width}×${layer.height}`)
+      const expectedWidth = layer.imageWidth ?? layer.width
+      const expectedHeight = layer.imageHeight ?? layer.height
+      if (width !== expectedWidth || height !== expectedHeight) {
+        throw new Error(`decoded ${width}×${height}, manifest declares ${expectedWidth}×${expectedHeight}`)
       }
     } catch (error) {
       issues.push({ severity: 'FAIL', message: `${layer.image}: ${message(error)}` })
