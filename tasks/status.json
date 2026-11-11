@@ -249,6 +249,7 @@
     ],
     "liveChecks": [
       "Desktop five-round 25,000 result and reload persistence",
+      "Wide desktop 1920x1080 five-round 25,000 result and reload persistence",
       "Mobile five-round 25,000 result and reload persistence",
       "Zero console and network errors"
     ]

@@ -63,3 +63,5 @@ The public preview contains three terrain images and 97 locations. Detailed zone
 Chromium played the real daily on the local server at 1440 × 900, 1920 × 1080, and 390 × 844. The map viewport measured 1395 × 684, 1860 × 864, and 372 × 490 respectively. Each run verified that the confirmation button fit on screen, placed world pins across both landmasses and the ocean, checked their saved canonical coordinates, completed all five rounds for 25,000, and restored the result after refresh. The runs recorded zero console and network errors.
 
 [Desktop round](qa/wide-map-desktop.png) · [Mobile round](qa/wide-map-mobile.png)
+
+[The GitHub Pages deployment](https://github.com/mrock187/wowtap/actions/runs/42948269550) passed both jobs. The live 1920 × 1080 run initially timed out waiting for a 5,000-point reveal. After the browser check began waiting for each intended pin to persist before confirming it, all three live viewports completed five rounds at 25,000 points and restored the result after refresh.

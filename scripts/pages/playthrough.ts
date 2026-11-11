@@ -17,6 +17,11 @@ async function pinAt(page: Page, map: Locator, point: Point, touch: boolean) {
   else await page.mouse.click(screen.x, screen.y)
 }
 
+async function readPending(page: Page, date: string) {
+  const raw = await page.evaluate(key => localStorage.getItem(key), JOURNAL_KEY)
+  return decodeJournal(raw)[date]?.pending
+}
+
 const target = process.argv[2]
 if (!target) throw new Error('Usage: tsx scripts/pages/playthrough.ts https://host/project/')
 const site = new URL(target.endsWith('/') ? target : target + '/')
@@ -74,8 +79,7 @@ try {
             const display = projection.project(atlas.toWorld(atlas.world.id, point))
             await pinAt(page, map, display, name === 'mobile')
             await expect.poll(async () => {
-              const raw = await page.evaluate(key => localStorage.getItem(key), JOURNAL_KEY)
-              const pending = decodeJournal(raw)[daily.date]?.pending
+              const pending = await readPending(page, daily.date)
               if (pending?.mapId !== atlas.world.id) return Infinity
               return Math.hypot(pending.point.x - point.x, pending.point.y - point.y)
             }).toBeLessThan(.008)
@@ -94,6 +98,10 @@ try {
       if (answer.kind !== 'point') throw new Error('Published play-through expects a point answer')
       const point = atlas.toWorld(location.mapId, answer.point)
       await pinAt(page, map, path.length === 1 && projection ? projection.project(point) : point, name === 'mobile')
+      await expect.poll(async () => {
+        const pending = await readPending(page, daily.date)
+        return pending?.mapId === location.mapId ? Math.hypot(pending.point.x - answer.point.x, pending.point.y - answer.point.y) : pending
+      }, { message: `${name} round ${index + 1}: pin at ${location.name}` }).toBeLessThan(.008)
       await page.getByRole('button', { name: 'Confirm pin' }).click()
       await page.getByRole('complementary', { name: 'Round result' }).getByText('5,000', { exact: true }).waitFor()
       await page.getByRole('button', { name: index === 4 ? 'See results' : 'Next round' }).click()

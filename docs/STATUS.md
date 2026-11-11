@@ -15,7 +15,7 @@ The current content covers Kalimdor and the Eastern Kingdoms using Forever build
 | Static release | Full npm run verify passed |
 | Repository path | /wowtap/ production preview completed all five rounds |
 | GitHub deployment | [Deployment history](https://github.com/mrock187/wowtap/actions/workflows/verify.yml) |
-| Map layout revision | Local 1440 × 900, 1920 × 1080, and 390 × 844 play-throughs passed. Desktop map uses over 96% of the viewport width. |
-| Live site | The initial deployment scored 25,000 and restored the completed result after refresh at 1440 × 900 and 390 × 844. |
+| Map layout revision | Desktop map uses over 96% of the viewport width at 1440 × 900 and 1920 × 1080. |
+| Live site | The map layout deployment scored 25,000 and restored the completed result after refresh at 1440 × 900, 1920 × 1080, and 390 × 844. |
 
 Publication was explicitly requested by the owner. The provenance ledger records that instruction and the source material under the user-authorized status. [Deployment and update guide](DEPLOY.md)
