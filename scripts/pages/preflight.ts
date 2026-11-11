@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 import { lstat, readFile, readdir } from 'node:fs/promises'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { detailTerrain } from '../../src/content/terrainDetail'
 import { contentSchema, type Content } from '../../src/domain/content'
 import { parseSchedule, readPuzzle, utcDate } from '../../src/engine/schedule'
 import { auditLocationContent } from '../data/audit'
@@ -78,8 +79,12 @@ async function check(root: string, qa: boolean) {
   if (!readPuzzle(schedule, utcDate(new Date()))) throw new Error('Frozen schedule has no puzzle for the current UTC date')
 
   const publishedImages = new Map<string, string>()
+  const displayImages = new Set<string>()
   for (const season of schedule.seasons) {
-    for (const layer of season.content.atlas.layers) {
+    const base = season.content.atlas.layers
+    const details = base.flatMap(layer => detailTerrain(layer) ?? [])
+    for (const layer of details) displayImages.add(layer.image)
+    for (const layer of [...base, ...details]) {
       if (!['approved', 'user-authorized'].includes(layer.rights) || !layer.assetSha256 || layer.source.build.startsWith('0.')) {
         throw new Error(`Missing release evidence for ${layer.image}`)
       }
@@ -94,7 +99,7 @@ async function check(root: string, qa: boolean) {
     }
   }
   if (mapFiles.some(path => !publishedImages.has(path))) throw new Error('Unlisted map image in output')
-  console.log(`PASS static package and ${publishedImages.size} frozen atlas images.`)
+  console.log(`PASS static package with ${publishedImages.size - displayImages.size} frozen atlas images and ${displayImages.size} detail images.`)
 }
 
 const args = process.argv.slice(2)

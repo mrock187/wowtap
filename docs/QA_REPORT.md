@@ -65,3 +65,11 @@ Chromium played the real daily on the local server at 1440 × 900, 1920 × 1080,
 [Desktop round](qa/wide-map-desktop.png) · [Mobile round](qa/wide-map-mobile.png)
 
 [The GitHub Pages deployment](https://github.com/mrock187/wowtap/actions/runs/42948269550) passed both jobs. The live 1920 × 1080 run initially timed out waiting for a 5,000-point reveal. After the browser check began waiting for each intended pin to persist before confirming it, all three live viewports completed five rounds at 25,000 points and restored the result after refresh.
+
+## Full-width continent camera and detail terrain
+
+Chromium verified the continent camera at 1440 × 900, 1920 × 1080, and 390 × 844 on the local server. In each case it loaded the detail raster, checked that the camera matched the viewport aspect ratio, zoomed in, and selected Fit before placing the answer. Each five-round run scored 25,000, restored the result after refresh, and recorded zero console and network errors. Camera unit coverage verifies that panning reaches the north and south edges and that terrain scale remains uniform.
+
+The Kalimdor and Eastern Kingdoms detail rasters measure 4109 × 2739 and 3947 × 2631. They use the source elevation midpoints and interpolated ocean coverage. The larger PNG is 2,263,850 bytes, under the 25 MiB per-file limit. Both detail images are loaded on demand after entry into their respective continents.
+
+[Desktop continent zoom](qa/detail-continent-desktop.png) · [Mobile continent zoom](qa/detail-continent-mobile.png)

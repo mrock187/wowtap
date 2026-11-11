@@ -10,7 +10,7 @@
   pointer-events: none;
 }
 .map-toolbar > * { pointer-events: auto; }
-.map-breadcrumb { margin-right: auto; padding: 7px 9px; border: 1px solid #435972; border-radius: 7px; background: #0b1728; font-size: .72rem; font-weight: 750; }
+.map-breadcrumb { align-self: center; padding: 7px 9px; border: 1px solid #435972; border-radius: 7px; background: #0b1728; font-size: .72rem; font-weight: 750; }
 .map-control {
   min-width: 44px;
   min-height: 44px;

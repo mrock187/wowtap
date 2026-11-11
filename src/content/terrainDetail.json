@@ -1,0 +1,16 @@
+[
+  {
+    "base": "55c2219022ff6437ebb80a1029d4d79cc88a25caa58038cf6be42f8cfdbfd64f",
+    "image": "maps/forever-69913-terrain-detail-v1/1414.png",
+    "width": 4109,
+    "height": 2739,
+    "sha256": "2e18ec61ce5be86db14bbe2e99bf33309e84b92e2c39b399a457e60a8ffb51f7"
+  },
+  {
+    "base": "a5e9a0b3174458c698e233accc8ba6d44a397bb61f12bc917f7fef41dc5a1e8e",
+    "image": "maps/forever-69913-terrain-detail-v1/1415.png",
+    "width": 3947,
+    "height": 2631,
+    "sha256": "05e0c4b4fd4fccfc5ac1e3636208e1663c17ff25de9232a07fda088f3f5ea014"
+  }
+]

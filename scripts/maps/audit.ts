@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto'
 import { lstat, readFile, readdir } from 'node:fs/promises'
 import { extname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { detailTerrain } from '../../src/content/terrainDetail'
 import { mapManifestSchema, type MapLayer } from '../../src/domain/content'
 import { parseSchedule } from '../../src/engine/schedule'
 import { coordinateFixture } from '../../tests/fixtures/coordinates'
@@ -126,6 +127,12 @@ export async function auditMaps(root: string, fixture: boolean, checkImage: Imag
     }
   }
   const layers = [...layersByImage.values()]
+  if (!fixture) {
+    for (const layer of layersByImage.values()) {
+      const detail = detailTerrain(layer)
+      if (detail) layers.push(detail)
+    }
+  }
   const listed = new Set(layers.map(layer => layer.image))
   for (const file of files.keys()) {
     if (!listed.has(file)) issues.push({ severity: 'FAIL', message: `${file}: unlisted map asset` })
@@ -222,7 +229,7 @@ async function run() {
     console.log(`${state} ${fixture ? 'fictional QA atlas' : 'Forever atlas'} — ${report.files} map files, ${report.bytes} bytes, max ${report.maxBytes} bytes`)
     console.log(`Layers with files: ${kinds}`)
     for (const { layer, bytes, sha256 } of report.assets) {
-      console.log(`${layer.id}: ${layer.width}×${layer.height}, ${bytes} bytes, SHA-256 ${sha256}`)
+      console.log(`${layer.image}: ${layer.imageWidth ?? layer.width}×${layer.imageHeight ?? layer.height}, ${bytes} bytes, SHA-256 ${sha256}`)
       console.log(`  ${layer.rights}, build ${layer.source.build}, ${layer.source.reference}, ${layer.source.url}`)
     }
     for (const issue of report.issues) console.error(`${issue.severity} ${issue.message}`)

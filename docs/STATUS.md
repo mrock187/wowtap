@@ -10,12 +10,13 @@ The current content covers Kalimdor and the Eastern Kingdoms using Forever build
 
 | Gate | Current evidence |
 | --- | --- |
-| Engine and storage | 70 unit tests and 14 browser tests passed for the map layout revision |
-| Real content | 3 terrain images and 97 locations passed asset, coordinate and provenance audits |
+| Engine and storage | 70 unit tests and 14 browser tests passed for the wider overview revision |
+| Real content | 3 frozen terrain images, 2 continent detail images, and 97 locations |
 | Static release | Full npm run verify passed |
 | Repository path | /wowtap/ production preview completed all five rounds |
 | GitHub deployment | [Deployment history](https://github.com/mrock187/wowtap/actions/workflows/verify.yml) |
 | Map layout revision | Desktop map uses over 96% of the viewport width at 1440 × 900 and 1920 × 1080. |
+| Continent detail | Local play-throughs at both desktop sizes and 390 × 844 confirmed viewport-filling zoom and the detail rasters. |
 | Live site | The map layout deployment scored 25,000 and restored the completed result after refresh at 1440 × 900, 1920 × 1080, and 390 × 844. |
 
 Publication was explicitly requested by the owner. The provenance ledger records that instruction and the source material under the user-authorized status. [Deployment and update guide](DEPLOY.md)

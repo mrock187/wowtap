@@ -23,3 +23,5 @@ The committed `public/game/` files hold the frozen schedule and reviewed dataset
 `npm run publish:prepare` stages the initial local snapshot and refuses to overwrite different published bytes. After initial publication, use the schedule extension process in [engine notes](ENGINE.md) and review new asset evidence in [the provenance ledger](../DATA_PROVENANCE.md).
 
 The preview includes 97 locations on three terrain views for Forever build 1.60.1.69913. Separate zone/city layers, NPC precision content and additional regions remain open product work.
+
+To reproduce the published continent detail plates, run `npx tsx scripts/local/prepare.ts --detail` and `npx tsx scripts/pages/stage-detail.ts`. The detail manifest binds each presentation image to its frozen base image digest. The map audit checks the detail files against their dimensions, hashes, and provenance.

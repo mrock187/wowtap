@@ -46,14 +46,23 @@ function encode(width: number, height: number, rows: Buffer) {
   ])
 }
 
+function filterDetailRows(rows: Buffer, stride: number) {
+  // PNG Sub filtering preserves the colors and compresses the smooth shading.
+  for (let row = 0; row < rows.length; row += stride) {
+    rows[row] = 1
+    for (let i = row + stride - 1; i >= row + 4; i--) rows[i] -= rows[i - 3]
+  }
+}
+
 const clamp = (n: number) => Math.max(0, Math.min(1, n))
+const ocean: RGB = [12, 39, 72]
 const mix = (a: RGB, b: RGB, t: number): RGB => [
   a[0] + (b[0] - a[0]) * t,
   a[1] + (b[1] - a[1]) * t,
   a[2] + (b[2] - a[2]) * t,
 ]
 
-async function terrainFile(file: typeof files[number]) {
+async function terrainFile(file: typeof files[number], detail: boolean) {
   const path = new URL(`${file.id}.wdl`, stage)
   let data = await readFile(path).catch((error: NodeJS.ErrnoException) => {
     if (error.code !== 'ENOENT') throw error
@@ -66,15 +75,16 @@ async function terrainFile(file: typeof files[number]) {
     await writeFile(path, data)
   }
   if (createHash('sha256').update(data).digest('hex') !== file.sha) throw new Error(`Unexpected WDL checksum: ${file.id}`)
-  return readTerrain(data)
+  return readTerrain(data, detail)
 }
 
-export async function prepareTerrain(raw: unknown) {
+export async function prepareTerrain(raw: unknown, detail = false) {
   const source = sourceSchema.parse(raw)
-  await mkdir(out, { recursive: true })
+  const directory = detail ? new URL('detail/', stage) : out
+  await mkdir(directory, { recursive: true })
   const continents: Region[] = []
   for (const file of files) {
-    const terrain = await terrainFile(file)
+    const terrain = await terrainFile(file, detail)
     const frame = source.continents[file.map]
     if (!frame) throw new Error(`Missing terrain frame: ${file.map}`)
     const sample = (x: number, y: number) => terrain(frame.maxY - (x - frame.ox) / frame.s, frame.maxX - (y - frame.oy) / frame.s)
@@ -82,12 +92,13 @@ export async function prepareTerrain(raw: unknown) {
     continents.push({ map: file.map, sample, bounds: landmass.bounds })
   }
   const records = []
-  for (const plate of art) {
+  for (const plate of art.filter(plate => !detail || plate.map !== null)) {
     const extent = source.maps.find(map => map.id === plate.uiMapId)?.rect
     if (!extent) throw new Error(`Missing art rectangle: ${plate.uiMapId}`)
     const [left, top, right, bottom] = extent
-    const width = Math.ceil((right - left) * 2)
-    const height = Math.ceil((bottom - top) * 2)
+    const density = detail ? 5 : 2
+    const width = Math.ceil((right - left) * density)
+    const height = Math.ceil((bottom - top) * density)
     const stride = width * 3 + 1
     const rows = Buffer.alloc(stride * height)
     const color = (x: number, y: number): RGB => {
@@ -95,17 +106,21 @@ export async function prepareTerrain(raw: unknown) {
         && x >= region.bounds[0] && x <= region.bounds[2] && y >= region.bounds[1] && y <= region.bounds[3]))
       const sample = landmass?.sample
       const elevation: Sample = sample?.(x, y)
-      if (!sample || !elevation || elevation.ocean) return [12, 39, 72]
+      if (!sample || !elevation) return ocean
+      const coverage = elevation.land === undefined ? Number(!elevation.ocean) : clamp((elevation.land - .34) / .32)
+      if (!coverage) return ocean
       const z = elevation.height
-      const slopeX = (sample(x + .85, y)?.height ?? z) - (sample(x - .85, y)?.height ?? z)
-      const slopeY = (sample(x, y + .85)?.height ?? z) - (sample(x, y - .85)?.height ?? z)
-      const shade = .78 + .48 * (.5 + Math.atan((slopeX + slopeY) / 48) / Math.PI)
+      const radius = detail ? .55 : .85
+      const slopeX = (sample(x + radius, y)?.height ?? z) - (sample(x - radius, y)?.height ?? z)
+      const slopeY = (sample(x, y + radius)?.height ?? z) - (sample(x, y - radius)?.height ?? z)
+      const shade = .78 + .48 * (.5 + Math.atan((slopeX + slopeY) / (detail ? 35 : 48)) / Math.PI)
       const high = clamp((z - 70) / 520)
       const coastal = clamp((22 - z) / 32)
       const green = mix([63, 109, 74], [155, 135, 91], high)
       const land = mix(green, [143, 156, 104], coastal * .65)
       const summit = mix(land, [207, 218, 213], clamp((z - 730) / 600))
-      return [summit[0] * shade, summit[1] * shade, summit[2] * shade]
+      const surface: RGB = [summit[0] * shade, summit[1] * shade, summit[2] * shade]
+      return coverage === 1 ? surface : mix(ocean, surface, coverage)
     }
     for (let y = 0; y < height; y++) {
       const v = top + (y + .5) * (bottom - top) / height
@@ -116,10 +131,11 @@ export async function prepareTerrain(raw: unknown) {
         for (let channel = 0; channel < 3; channel++) rows[start + channel] = Math.round(Math.min(255, pixel[channel]))
       }
     }
+    if (detail) filterDetailRows(rows, stride)
     const image = encode(width, height, rows)
-    await writeFile(new URL(`${plate.uiMapId}.png`, out), image)
+    await writeFile(new URL(`${plate.uiMapId}.png`, directory), image)
     records.push({ id: plate.uiMapId, width, height, sha256: createHash('sha256').update(image).digest('hex') })
   }
-  await writeFile(new URL('manifest.json', out), JSON.stringify({ build, records }) + '\n')
+  await writeFile(new URL('manifest.json', directory), JSON.stringify({ build, records }) + '\n')
   console.log(`Rendered ${records.length} terrain-only views from Forever ${build} elevation and ocean data.`)
 }

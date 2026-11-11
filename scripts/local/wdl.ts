@@ -3,9 +3,9 @@ const cells = 16
 const tileSize = 1600 / 3
 
 type Tile = { heights: Int16Array; ocean?: Uint16Array }
-export type Terrain = (west: number, north: number) => { height: number; ocean: boolean } | undefined
+export type Terrain = (west: number, north: number) => { height: number; ocean: boolean; land?: number } | undefined
 
-export function readTerrain(data: Buffer): Terrain {
+export function readTerrain(data: Buffer, includeMidpoints = false): Terrain {
   let table = -1
   for (let offset = 0; offset + 8 <= data.length;) {
     const size = data.readUInt32LE(offset + 4)
@@ -27,7 +27,9 @@ export function readTerrain(data: Buffer): Terrain {
     const size = data.readUInt32LE(start + 4)
     const next = start + 8 + size
     if (size < count * 2 || next > data.length) throw new Error(`Invalid WDL height payload ${index}`)
-    const heights = Int16Array.from({ length: count }, (_, i) => data.readInt16LE(start + 8 + i * 2))
+    const sampleCount = includeMidpoints ? count + cells ** 2 : count
+    if (size < sampleCount * 2) throw new Error(`Missing WDL midpoint heights for tile ${index}`)
+    const heights = Int16Array.from({ length: sampleCount }, (_, i) => data.readInt16LE(start + 8 + i * 2))
     let ocean: Uint16Array | undefined
     if (data.toString('ascii', next, next + 4) === 'EOAM') {
       if (next + 40 > data.length || data.readUInt32LE(next + 4) !== 32) {
@@ -37,6 +39,12 @@ export function readTerrain(data: Buffer): Terrain {
     }
     return { heights, ocean }
   })
+
+  function landCell(x: number, y: number) {
+    if (x < 0 || y < 0 || x >= grid * cells || y >= grid * cells) return 0
+    const tile = tiles[Math.floor(y / cells) * grid + Math.floor(x / cells)]
+    return tile && !((tile.ocean?.[y % cells] ?? 0) & (1 << (x % cells))) ? 1 : 0
+  }
 
   return (west, north) => {
     const column = 32 - west / tileSize
@@ -56,8 +64,27 @@ export function readTerrain(data: Buffer): Terrain {
     const se = sw + 1
     const northEdge = tile.heights[nw] * (1 - u) + tile.heights[ne] * u
     const southEdge = tile.heights[sw] * (1 - u) + tile.heights[se] * u
-    const height = northEdge * (1 - v) + southEdge * v
+    let height = northEdge * (1 - v) + southEdge * v
+    if (includeMidpoints) {
+      const midpoint = tile.heights[(cells + 1) ** 2 + j * cells + i]
+      const cornerMean = (tile.heights[nw] + tile.heights[ne] + tile.heights[sw] + tile.heights[se]) / 4
+      // The midpoint contribution reaches zero smoothly at each shared cell edge.
+      const weight = 256 * (u * (1 - u) * v * (1 - v)) ** 2
+      height += (midpoint - cornerMean) * weight
+    }
     const ocean = Boolean((tile.ocean?.[j] ?? 0) & (1 << i))
+    if (includeMidpoints) {
+      // Interpolate cell-center mask samples so diagonal shores have continuous edges.
+      const centerX = column * cells - .5
+      const centerY = row * cells - .5
+      const left = Math.floor(centerX)
+      const top = Math.floor(centerY)
+      const fx = centerX - left
+      const fy = centerY - top
+      const north = landCell(left, top) * (1 - fx) + landCell(left + 1, top) * fx
+      const south = landCell(left, top + 1) * (1 - fx) + landCell(left + 1, top + 1) * fx
+      return { height, ocean, land: north * (1 - fy) + south * fy }
+    }
     return { height, ocean }
   }
 }

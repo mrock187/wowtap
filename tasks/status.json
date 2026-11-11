@@ -247,6 +247,11 @@
       "World pin canonical coordinate checks on both landmasses and the ocean",
       "docs/QA_REPORT.md"
     ],
+    "continentDetailChecks": [
+      "Local desktop, wide desktop, and mobile camera and detail raster checks",
+      "Terrain midpoint, shoreline coverage, and camera edge regression tests",
+      "docs/QA_REPORT.md"
+    ],
     "liveChecks": [
       "Desktop five-round 25,000 result and reload persistence",
       "Wide desktop 1920x1080 five-round 25,000 result and reload persistence",

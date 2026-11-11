@@ -2,6 +2,7 @@ import { chromium, expect, type Locator, type Page } from '@playwright/test'
 import { mkdir } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { worldProjection } from '../../src/components/map/worldProjection'
+import { detailTerrain } from '../../src/content/terrainDetail'
 import { createAtlas } from '../../src/domain/atlas'
 import type { Point } from '../../src/domain/content'
 import { parseSchedule, readPuzzle, utcDate } from '../../src/engine/schedule'
@@ -92,6 +93,23 @@ try {
         const siblings = atlas.children(path[depth - 1].id).filter(layer => layer.kind === child.kind)
         const label = child.kind === 'city' ? 'Enter detailed map' : `Open ${child.kind} map`
         await page.getByRole('button', { name: label }).nth(siblings.findIndex(layer => layer.id === child.id)).click()
+        if (projection && child.kind === 'continent') {
+          const detail = detailTerrain(child)
+          if (index === 0 && detail) {
+            await expect(map.locator(`image[href$="${detail.image}"]`)).toHaveAttribute('opacity', '1')
+            const box = await map.boundingBox()
+            if (!box) throw new Error('Continent map is missing')
+            const readView = async () => (await map.getAttribute('viewBox'))!.split(' ').map(Number)
+            const bounds = atlas.bounds(child.id)
+            const [, , width, height] = await readView()
+            if (Math.abs(width / height - box.width / box.height) > .01) throw new Error('Continent viewport is letterboxed')
+            if (bounds.width / width < .65) throw new Error('Continent opens too narrow')
+            await page.getByRole('button', { name: 'Zoom in' }).click()
+            await expect.poll(async () => (await readView())[2]).toBeLessThan(width)
+            await page.screenshot({ path: fileURLToPath(new URL(`../../.local/published/${name}-continent-zoom.png`, import.meta.url)), fullPage: true })
+          }
+          await page.getByRole('button', { name: 'Fit' }).click()
+        }
       }
       await page.getByText('Unfolding the map…').waitFor({ state: 'hidden' })
       const answer = location.answers[0]

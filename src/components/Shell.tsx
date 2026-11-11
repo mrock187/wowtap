@@ -24,7 +24,7 @@ export function HelpButton() {
         <h2 id={title}>Read the terrain</h2>
         <ol>
           <li>Find each of the five named places on the unlabeled atlas. Follow the coastlines, hills, and other landforms.</li>
-          <li>Drag to pan and scroll or pinch to zoom. Use the detail controls to open a region, zone, or city.</li>
+          <li>Open a region with its map marker. Drag to pan, scroll or pinch to zoom, and select Fit to see the whole region.</li>
           <li>Place a pin and confirm. Closer guesses earn up to 5,000 points. For precision targets, use the city map to earn full credit.</li>
         </ol>
         <p>With the map focused, use arrow keys to pan, + and − to zoom, and Enter to place a pin at the center. Error is measured in atlas units.</p>

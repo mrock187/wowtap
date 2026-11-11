@@ -38,4 +38,15 @@ describe('Forever terrain', () => {
     data.writeUInt32LE(data.length, 8 + (32 * 64 + 32) * 4)
     expect(() => readTerrain(data)).toThrow(/height tile/)
   })
+
+  it('uses measured midpoint heights in detail renders and preserves the shared cell edge', () => {
+    const data = terrainTile()
+    const midpoint = 8 + 64 * 64 * 4 + 8 + 17 * 17 * 2
+    data.writeInt16LE(140, midpoint)
+    const sample = readTerrain(data, true)
+    expect(sample(-50 / 3, -50 / 3)?.height).toBeCloseTo(140)
+    expect(sample(0, -50 / 3)?.height).toBeCloseTo(10)
+    expect(sample(-100 / 3, -50 / 3)?.land).toBeCloseTo(.5)
+    expect(readTerrain(data)(-50 / 3, -50 / 3)?.height).toBeCloseTo(15)
+  })
 })

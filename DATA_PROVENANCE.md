@@ -35,3 +35,7 @@ On November 10, 2026 the project owner requested publication on GitHub Pages, fo
 | maps/forever-69913-terrain-v1/947.png | f39d76b1366559f519574c8b384aca12b54457a49932e524680d9e4b3c1e90c5 |
 | maps/forever-69913-terrain-v1/1414.png | 55c2219022ff6437ebb80a1029d4d79cc88a25caa58038cf6be42f8cfdbfd64f |
 | maps/forever-69913-terrain-v1/1415.png | a5e9a0b3174458c698e233accc8ba6d44a397bb61f12bc917f7fef41dc5a1e8e |
+| maps/forever-69913-terrain-detail-v1/1414.png | 2e18ec61ce5be86db14bbe2e99bf33309e84b92e2c39b399a457e60a8ffb51f7 |
+| maps/forever-69913-terrain-detail-v1/1415.png | 05e0c4b4fd4fccfc5ac1e3636208e1663c17ff25de9232a07fda088f3f5ea014 |
+
+The two detail rasters use the same build-pinned WDL sources and continent image rectangles as the original release. The additional shading incorporates the WDL midpoint samples. No placement data is read. The detail manifest binds the new rasters to the corresponding frozen image digests.

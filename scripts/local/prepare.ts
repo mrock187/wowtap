@@ -42,4 +42,5 @@ for (const [index, plate] of art.entries()) {
 }
 if (!existing) await writeFile(scheduleFile, JSON.stringify(schedule) + '\n', { flag: 'wx' })
 await prepareTerrain(upstream)
+if (process.argv.includes('--detail')) await prepareTerrain(upstream, true)
 console.log(`Local Forever ${content.atlas.build}: ${content.atlas.layers.length} plates, ${latest.content.dataset.locations.length} locations, ${latest.cooldownDays}-day minimum repeat gap.`)
