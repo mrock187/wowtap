@@ -1,23 +1,20 @@
-# Build status
+# WoWtap build status
 
-**INCOMPLETE / PUBLICATION_BLOCKED.** Five-round gameplay passed with the isolated QA atlas. The production build has zero Forever map images and zero verified gameplay locations. The official daily requires an exact-build, rights-cleared atlas and audited coordinates.
+**PUBLIC_PREVIEW_LIVE**
 
-| Gate | Status | Evidence |
-| --- | --- | --- |
-| G0–G2 | Passed | Source and hosting review, clean scaffold, nine transform and schema tests. |
-| G3Q / G4Q | Passed | Five fictional QA layers and eight location intake tests. |
-| G3 | Blocked | Zero approved real map assets. [Map audit](research/MAPS.md) |
-| G4 | Blocked | Zero verified playable locations. [Location audit](research/LOCATIONS.md) |
-| G5 | Passed | Thirty-eight schedule and scoring tests. [Engine](ENGINE.md) |
-| G6–G8 | Passed with QA fixtures | Desktop/mobile map navigation, complete daily, local journal, offline scoring, cross-tab submission and automated accessibility. [QA report](QA_REPORT.md) |
-| G9Q | Passed | Static build, size audit and loopback production smoke test. |
-| G9 | Blocked | Official atlas, dataset and schedule absent. |
-| G10 | Blocked | Real content, publication rights and deployment authorization required. [Release guide](DEPLOY.md) |
+[Play WoWtap](https://mrock187.github.io/wowtap/) · [Source repository](https://github.com/mrock187/wowtap)
 
-The worktree manager could not attach this Windows checkout. Cartography, data and engine work ran in parallel with disjoint file ownership in the same repository.
+The public GitHub Pages site serves the dark game interface, three terrain views, 97 source-backed locations, and a frozen daily schedule. HTTPS is enabled. The deployment workflow and live desktop/mobile play-throughs passed.
 
-## Real Forever local preview
+The current content covers Kalimdor and the Eastern Kingdoms using Forever build 1.60.1.69913. Separate zone/city imagery, NPC precision content, and additional regions remain open product work.
 
-The local-only snapshot is playable with `npm run dev:forever` after `npm run local:prepare`. It has three real unlabeled plates and 97 source-backed points on the two continents, pinned to Forever build 1.60.1.69913. The public release remains blocked. [Local preview and coverage](LOCAL_FOREVER.md)
+| Gate | Current evidence |
+| --- | --- |
+| Engine and storage | 69 unit tests and 14 browser tests passed |
+| Real content | 3 terrain images and 97 locations passed asset, coordinate and provenance audits |
+| Static release | Full npm run verify passed |
+| Repository path | /wowtap/ production preview completed all five rounds |
+| GitHub deployment | [Successful deployment run](https://github.com/mrock187/wowtap/actions/runs/42938521519) |
+| Live site | Desktop 1440 × 900 and mobile 390 × 844 each scored 25,000 and restored the completed result after refresh |
 
-The local preview now uses a map-first dark interface and three calibrated terrain-only views. Desktop and mobile real-source play-throughs passed, alongside 69 unit and 14 browser tests. [Terrain and coverage notes](LOCAL_FOREVER.md)
+Publication was explicitly requested by the owner. The provenance ledger records that instruction and the source material under the user-authorized status. [Deployment and update guide](DEPLOY.md)

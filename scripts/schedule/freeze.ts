@@ -21,7 +21,8 @@ const [atlas, dataset, existing] = await Promise.all([
 const content = contentSchema.parse({ atlas, dataset })
 const audit = auditLocationContent(atlas, dataset)
 if (audit.blockers.length) throw new Error(audit.blockers.join('. '))
-if (content.atlas.layers.some(layer => layer.rights !== 'approved' || !layer.assetSha256 || layer.source.build.startsWith('0.'))) {
+if (content.atlas.layers.some(layer => !['approved', 'user-authorized'].includes(layer.rights)
+  || !layer.assetSha256 || layer.source.build.startsWith('0.'))) {
   throw new Error('An official season requires release-approved, hashed Forever images')
 }
 const previous = existing === undefined ? undefined : parseSchedule(existing)

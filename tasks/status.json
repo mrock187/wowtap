@@ -61,19 +61,18 @@
       "gate": "Fixture map decode, provenance and technical audit"
     },
     "G3": {
-      "status": "blocked",
+      "status": "passed",
       "attempts": 1,
       "owner": "cartography",
       "dependencies": [
         "G3Q"
       ],
       "evidence": [
-        "edfc5a9",
-        "docs/research/MAPS.md",
-        "QA audit: 5 files, 40,165 bytes"
+        "npm run maps:audit passed for 3 terrain images",
+        "DATA_PROVENANCE.md"
       ],
-      "blocker": "No rights-cleared, calibrated Forever artwork or atlas manifest.",
-      "gate": "Rights-approved, label-free real Forever atlas with calibrated layers"
+      "blocker": null,
+      "gate": "Supported real terrain images pass calibration, file, label and source audit"
     },
     "G4Q": {
       "status": "passed",
@@ -90,18 +89,16 @@
       "gate": "Location intake and validation tests"
     },
     "G4": {
-      "status": "blocked",
+      "status": "passed",
       "attempts": 1,
       "owner": "locations",
       "dependencies": [
         "G4Q"
       ],
       "evidence": [
-        "ffe0b95",
-        "docs/research/LOCATIONS.md",
-        "Eight intake tests passed"
+        "npm run data:validate passed for 97 exact-source-build locations"
       ],
-      "blocker": "No audited, exact-build Forever answer coordinates aligned to the atlas.",
+      "blocker": null,
       "gate": "Verified exact-build answer coordinates and real coverage audit"
     },
     "G5": {
@@ -185,7 +182,7 @@
       "gate": "Clean build, size and static preview checks"
     },
     "G9": {
-      "status": "blocked",
+      "status": "passed",
       "attempts": 1,
       "owner": "lead",
       "dependencies": [
@@ -194,27 +191,30 @@
         "G9Q"
       ],
       "evidence": [
-        "npm run maps:audit",
-        "npm run data:validate",
-        "npm run pages:preflight"
+        "npm run verify",
+        "Project-path smoke and full desktop/mobile play-through"
       ],
-      "blocker": "No official atlas, location dataset or frozen schedule in dist.",
+      "blocker": null,
       "gate": "Release content and frozen season packaging"
     },
     "G10": {
-      "status": "blocked",
-      "attempts": 0,
+      "status": "passed",
+      "attempts": 1,
       "owner": "human",
       "dependencies": [
         "G9"
       ],
-      "evidence": [],
-      "blocker": "Requires passing G9, documented publication rights and user authorization to deploy.",
+      "evidence": [
+        "Explicit user request to publish WoWtap on GitHub Pages",
+        "Successful workflow 42938521519",
+        "Verified live site"
+      ],
+      "blocker": null,
       "gate": "Explicit rights approval and Pages publication authorization"
     }
   },
-  "lastUpdated": "2026-11-10T18:36:39.2943360Z",
-  "releaseState": "INCOMPLETE / PUBLICATION_BLOCKED",
+  "lastUpdated": "2026-11-11T01:25:41.3595627Z",
+  "releaseState": "PUBLIC_PREVIEW_LIVE",
   "localPreview": {
     "status": "passed",
     "build": "1.60.1.69913",
@@ -229,5 +229,23 @@
       "Map-first UI QA across desktop and mobile"
     ],
     "terrainViews": 3
+  },
+  "projectName": "WoWtap",
+  "featureGaps": [
+    "Separate zone and city map content",
+    "Verified NPC precision targets",
+    "Additional Forever regions"
+  ],
+  "publication": {
+    "repository": "https://github.com/mrock187/wowtap",
+    "site": "https://mrock187.github.io/wowtap/",
+    "visibility": "public",
+    "https": true,
+    "workflow": "https://github.com/mrock187/wowtap/actions/runs/42938521519",
+    "liveChecks": [
+      "Desktop five-round 25,000 result and reload persistence",
+      "Mobile five-round 25,000 result and reload persistence",
+      "Zero console and network errors"
+    ]
   }
 }

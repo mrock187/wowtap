@@ -1,5 +1,6 @@
 import { chromium } from '@playwright/test'
 import { mkdir } from 'node:fs/promises'
+import { fileURLToPath } from 'node:url'
 import { createAtlas } from '../../src/domain/atlas'
 import { parseSchedule, readPuzzle, utcDate } from '../../src/engine/schedule'
 
@@ -37,7 +38,7 @@ try {
       if (await map.locator('.map-answer-point, .map-answer-line, text').count()) throw new Error('Answer overlay visible before confirmation')
       if (index === 0) {
         await page.getByRole('button', { name: 'Open continent map' }).first().waitFor()
-        await page.screenshot({ path: new URL(`../../.local/published/${name}.png`, import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'), fullPage: true, scale: 'css' })
+        await page.screenshot({ path: fileURLToPath(new URL(`../../.local/published/${name}.png`, import.meta.url)), fullPage: true, scale: 'css' })
       }
       const path = atlas.path(location.mapId)
       for (let depth = 1; depth < path.length; depth++) {

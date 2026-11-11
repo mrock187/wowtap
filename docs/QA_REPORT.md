@@ -47,3 +47,11 @@ The post-preview `npm run verify:qa` passed 67 unit tests and 14 browser tests. 
 The local terrain build generated three PNGs (2,071,725 bytes total) from the two exact-build WDL files. The schedule digest stayed byte-for-byte identical. Real-source Chromium play-throughs at 1440 × 900 and 390 × 844 scored 25,000 with zero page or network errors and confirmed the main confirmation control fits in each opening viewport. The updated real screenshots remain in the ignored local preview directory.
 
 `npm run verify:qa` passed 69 unit tests, 14 Chromium cases, the static preflight and production preview. The production package stayed separate and measured 368,615 bytes across five files. [Desktop QA round](qa/map-first-world-desktop.png) · [Mobile QA reveal](qa/map-first-reveal-mobile.png)
+
+## WoWtap public deployment
+
+Created the public [mrock187/wowtap repository](https://github.com/mrock187/wowtap), enabled GitHub Pages with HTTPS, and deployed through the [verified workflow run](https://github.com/mrock187/wowtap/actions/runs/42938521519). The release `npm run verify` passed 69 unit tests, 14 browser tests, real map/data audits, frozen asset checks and static preview.
+
+The project-path build at `/wowtap/` passed both the preview smoke and a complete desktop/mobile play-through. The live [WoWtap site](https://mrock187.github.io/wowtap/) then completed all five rounds at 1440 × 900 and 390 × 844 with 25,000 points, restored completed results after refresh and recorded zero console, network or off-origin errors. Current live screenshots are in `.local/published/`.
+
+The public preview contains three terrain images and 97 locations. Detailed zone/city content and NPC targets remain open coverage work.
