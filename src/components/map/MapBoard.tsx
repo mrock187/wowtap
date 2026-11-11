@@ -1,7 +1,9 @@
-import { useEffect, useId, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
+import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
 import type { Atlas } from '../../domain/atlas'
 import type { Answer, MapLayer, Point } from '../../domain/content'
 import type { Guess } from '../../engine/scoring'
+import { MapArtwork } from './MapArtwork'
+import { worldProjection } from './worldProjection'
 import './map.css'
 
 type Frame = { id: string; center: Point; zoom: number }
@@ -25,12 +27,11 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value))
 }
 
-function initialFrame(atlas: Atlas, id: string): Frame {
-  return { id, center: atlas.toWorld(id, { x: .5, y: .5 }), zoom: 1 }
+function initialFrame(id: string, { left, top, width, height }: ReturnType<Atlas['bounds']>): Frame {
+  return { id, center: { x: left + width / 2, y: top + height / 2 }, zoom: 1 }
 }
 
-function keepInside(atlas: Atlas, frame: Frame): Frame {
-  const { left, top, width, height } = atlas.bounds(frame.id)
+function keepInside(frame: Frame, { left, top, width, height }: ReturnType<Atlas['bounds']>): Frame {
   const halfWidth = width / frame.zoom / 2
   const halfHeight = height / frame.zoom / 2
   return {
@@ -43,7 +44,10 @@ function keepInside(atlas: Atlas, frame: Frame): Frame {
 }
 
 export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
-  const [frames, setFrames] = useState(() => [initialFrame(atlas, atlas.world.id)])
+  const world = useMemo(() => worldProjection(atlas), [atlas])
+  const [frames, setFrames] = useState(() => [
+    initialFrame(atlas.world.id, world?.bounds ?? atlas.bounds(atlas.world.id)),
+  ])
   const [size, setSize] = useState({ width: 0, height: 0 })
   const [images, setImages] = useState<Record<string, 'loaded' | 'error'>>({})
   const [retry, setRetry] = useState(0)
@@ -57,21 +61,29 @@ export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
   // The reveal mounts a separate board so its initial view cannot influence guessing.
   const frame = frames[frames.length - 1]
   const layer = atlas.layer(frame.id)
+  const projection = frame.id === atlas.world.id ? world : null
   const terrain = import.meta.env.DEV && import.meta.env.MODE === 'local-forever'
   const image = terrain && layer.uiMapId ? `terrain/${layer.uiMapId}.png` : layer.image
   const extent = atlas.bounds(frame.id)
   const [cropLeft, cropTop, cropRight, cropBottom] = layer.imageCrop ?? [0, 0, 1, 1]
   const imageWidth = extent.width / (cropRight - cropLeft)
   const imageHeight = extent.height / (cropBottom - cropTop)
-  const width = extent.width / frame.zoom
-  const height = extent.height / frame.zoom
+  const display = projection?.bounds ?? extent
+  const width = display.width / frame.zoom
+  const height = display.height / frame.zoom
   const left = frame.center.x - width / 2
   const top = frame.center.y - height / 2
   const unit = 1 / (Math.min(size.width / width, size.height / height) || 1)
   const imageStatus = images[layer.id]
-  const worldGuess = guess ? atlas.toWorld(guess.mapId, guess.point) : null
+  function toDisplay(mapId: string, point: Point) {
+    const canonical = atlas.toWorld(mapId, point)
+    return projection?.project(canonical) ?? canonical
+  }
+
+  const shownGuess = guess ? toDisplay(guess.mapId, guess.point) : null
+  const shownAnswer = reveal && (projection?.project(reveal.closest) ?? reveal.closest)
   const details = atlas.children(layer.id).map(child => ({
-    child, center: atlas.toWorld(child.id, { x: .5, y: .5 }),
+    child, center: toDisplay(child.id, { x: .5, y: .5 }),
   })).filter(({ center }) => center.x >= left && center.x <= left + width
     && center.y >= top && center.y <= top + height)
 
@@ -86,7 +98,7 @@ export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
     return () => observer.disconnect()
   }, [])
 
-  function toWorld(client: Point): Point | null {
+  function fromClient(client: Point): Point | null {
     const matrix = svg.current?.getScreenCTM()
     if (!matrix) return null
     const point = new DOMPoint(client.x, client.y).matrixTransform(matrix.inverse())
@@ -94,7 +106,11 @@ export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
   }
 
   function updateFrame(update: (current: Frame) => Frame) {
-    setFrames(current => [...current.slice(0, -1), keepInside(atlas, update(current[current.length - 1]))])
+    setFrames(current => {
+      const next = update(current[current.length - 1])
+      const bounds = next.id === atlas.world.id && world ? world.bounds : atlas.bounds(next.id)
+      return [...current.slice(0, -1), keepInside(next, bounds)]
+    })
   }
 
   function zoomBy(multiplier: number, anchor?: Point, dx = 0, dy = 0) {
@@ -127,23 +143,23 @@ export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
         const active = current[current.length - 1]
         const zoom = clamp(active.zoom * (event.deltaY > 0 ? .8 : 1.25), 1, atlas.layer(active.id).maxZoom)
         const scale = active.zoom / zoom
-        const next = keepInside(atlas, {
+        const next = keepInside({
           ...active, zoom,
           center: {
             x: anchor.x + (active.center.x - anchor.x) * scale,
             y: anchor.y + (active.center.y - anchor.y) * scale,
           },
-        })
+        }, active.id === atlas.world.id && world ? world.bounds : atlas.bounds(active.id))
         return [...current.slice(0, -1), next]
       })
     }
     element.addEventListener('wheel', onWheel, { passive: false })
     return () => element.removeEventListener('wheel', onWheel)
-  }, [atlas])
+  }, [atlas, world])
 
-  function pin(world: Point | null) {
-    if (reveal || !world || imageStatus !== 'loaded') return
-    const point = atlas.fromWorld(frame.id, world)
+  function pin(position: Point) {
+    if (reveal || imageStatus !== 'loaded') return
+    const point = atlas.fromWorld(frame.id, projection?.unproject(position) ?? position)
     const epsilon = 1e-9
     if (point.x < -epsilon || point.x > 1 + epsilon || point.y < -epsilon || point.y > 1 + epsilon) return
     onPin({ mapId: frame.id, point: { x: clamp(point.x, 0, 1), y: clamp(point.y, 0, 1) } })
@@ -174,7 +190,7 @@ export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
       const multiplier = Math.hypot(client.x - other.x, client.y - other.y) / distance
       const before = midpoint(previous, other)
       const after = midpoint(client, other)
-      zoomBy(multiplier, toWorld(before) ?? undefined, after.x - before.x, after.y - before.y)
+      zoomBy(multiplier, fromClient(before) ?? undefined, after.x - before.x, after.y - before.y)
       return
     }
     if (start.current && Math.hypot(client.x - start.current.x, client.y - start.current.y) > 5) moved.current = true
@@ -183,18 +199,18 @@ export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
 
   function pointerUp(event: PointerEvent<SVGSVGElement>) {
     if (!pointers.current.delete(event.pointerId) || pointers.current.size || moved.current) return
-    const world = toWorld({ x: event.clientX, y: event.clientY })
-    if (!world || imageStatus !== 'loaded') return
-    if (world.x < left || world.x > left + width || world.y < top || world.y > top + height) return
+    const position = fromClient({ x: event.clientX, y: event.clientY })
+    if (!position || imageStatus !== 'loaded') return
+    if (position.x < left || position.x > left + width || position.y < top || position.y > top + height) return
     // Use the actual tap position so touch target adjustment cannot open a nearby layer.
-    const detail = details.find(({ center }) => Math.abs(world.x - center.x) <= 22 * unit
-      && Math.abs(world.y - center.y) <= 22 * unit)
+    const detail = details.find(({ center }) => Math.abs(position.x - center.x) <= 22 * unit
+      && Math.abs(position.y - center.y) <= 22 * unit)
     if (detail) enter(detail.child.id)
-    else pin(world)
+    else pin(position)
   }
 
   function enter(id: string) {
-    setFrames(current => [...current, initialFrame(atlas, id)])
+    setFrames(current => [...current, initialFrame(id, atlas.bounds(id))])
   }
 
   function back() {
@@ -212,7 +228,7 @@ export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
       zoomBy(1, undefined, offset.x, offset.y)
     } else if (event.key === '+' || event.key === '=') zoomBy(1.4)
     else if (event.key === '-') zoomBy(1 / 1.4)
-    else if (event.key === 'Home') updateFrame(() => initialFrame(atlas, frame.id))
+    else if (event.key === 'Home') updateFrame(() => initialFrame(frame.id, display))
     else if (event.key === 'Enter' || event.key === ' ') pin(frame.center)
     else return
     event.preventDefault()
@@ -221,16 +237,16 @@ export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
   return (
     <section className="atlas" aria-label={reveal ? 'Answer atlas' : 'Guess atlas'}>
       <div className="map-toolbar">
-        <div className="map-breadcrumb" aria-label="Current map level">
+        {frames.length > 1 && <div className="map-breadcrumb" aria-label="Current map level">
           {frames.map((item, index) => (
             <span key={item.id}>{index > 0 && <span aria-hidden="true"> / </span>}{layerTitle[atlas.layer(item.id).kind]}</span>
           ))}
-        </div>
+        </div>}
         {frames.length > 1 && <button className="map-control" onClick={back}>← Back</button>}
         <div className="map-zoom" aria-label="Zoom controls">
           <button className="map-control" aria-label="Zoom out" disabled={frame.zoom <= 1} onClick={() => zoomBy(1 / 1.4)}>−</button>
           <button className="map-control" aria-label="Zoom in" disabled={frame.zoom >= layer.maxZoom} onClick={() => zoomBy(1.4)}>+</button>
-          <button className="map-control map-reset" onClick={() => updateFrame(() => initialFrame(atlas, frame.id))}>Fit</button>
+          <button className="map-control map-reset" onClick={() => updateFrame(() => initialFrame(frame.id, display))}>Fit</button>
         </div>
       </div>
       <div className="map-canvas">
@@ -250,12 +266,12 @@ export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
         >
           <defs><clipPath id={clipId}><rect x={left} y={top} width={width} height={height} /></clipPath></defs>
           <g clipPath={`url(#${clipId})`}>
-          <image
+          <MapArtwork
             key={`${layer.id}:${retry}`}
+            extent={extent} projection={projection}
             href={`${import.meta.env.BASE_URL}${image}${retry ? `?retry=${retry}` : ''}`}
             x={extent.left - cropLeft * imageWidth} y={extent.top - cropTop * imageHeight}
             width={imageWidth} height={imageHeight}
-            preserveAspectRatio="none"
             onLoad={() => setImages(current => ({ ...current, [layer.id]: 'loaded' }))}
             onError={() => setImages(current => ({ ...current, [layer.id]: 'error' }))}
           />
@@ -281,19 +297,19 @@ export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
               </g>
             )
           })}
-          {reveal && worldGuess && (
-            <line className="map-answer-line" x1={worldGuess.x} y1={worldGuess.y} x2={reveal.closest.x} y2={reveal.closest.y} />
+          {shownAnswer && shownGuess && (
+            <line className="map-answer-line" x1={shownGuess.x} y1={shownGuess.y} x2={shownAnswer.x} y2={shownAnswer.y} />
           )}
           {reveal?.answers.map((answer, index) => {
             if (answer.kind === 'point') {
-              const point = atlas.toWorld(reveal.mapId, answer.point)
+              const point = toDisplay(reveal.mapId, answer.point)
               return <circle key={index} className="map-answer-point" cx={point.x} cy={point.y} r={8 * unit} />
             }
-            const points = answer.vertices.map(vertex => atlas.toWorld(reveal.mapId, vertex))
+            const points = answer.vertices.map(vertex => toDisplay(reveal.mapId, vertex))
             return <polygon key={index} className="map-answer-area" points={points.map(point => `${point.x},${point.y}`).join(' ')} />
           })}
-          {worldGuess && (
-            <g className="map-pin" aria-label="Your pin" transform={`translate(${worldGuess.x} ${worldGuess.y}) scale(${unit})`}>
+          {shownGuess && (
+            <g className="map-pin" aria-label="Your pin" transform={`translate(${shownGuess.x} ${shownGuess.y}) scale(${unit})`}>
               <path d="M0 0C-4-6-10-11-10-17a10 10 0 0 1 20 0C10-11 4-6 0 0Z" />
               <circle cy="-17" r="3" />
             </g>
@@ -318,9 +334,7 @@ export function MapBoard({ atlas, guess, onPin, reveal }: MapBoardProps) {
           </div>
         )}
       </div>
-      <p className="map-caption">
-        {reveal ? 'Gold marks the accepted answer. Red marks your pin.' : 'Tap to place a pin. Drag to pan, scroll or pinch to zoom. Use + on the map to open detail.'}
-      </p>
+      {reveal && <p className="map-caption">Gold marks the accepted answer. Red marks your pin.</p>}
     </section>
   )
 }

@@ -55,3 +55,11 @@ Created the public [mrock187/wowtap repository](https://github.com/mrock187/wowt
 The project-path build at `/wowtap/` passed both the preview smoke and a complete desktop/mobile play-through. The live [WoWtap site](https://mrock187.github.io/wowtap/) then completed all five rounds at 1440 × 900 and 390 × 844 with 25,000 points, restored completed results after refresh and recorded zero console, network or off-origin errors. Current live screenshots are in `.local/published/`.
 
 The public preview contains three terrain images and 97 locations. Detailed zone/city content and NPC targets remain open coverage work.
+
+## Wider map and compact round layout
+
+`npm run verify` passed 70 unit tests, 14 Chromium tests, the real map and data audits, the frozen asset preflight, and the static preview. The release package contained 11 files, with a 1,031,413-byte largest file under the 25 MiB limit.
+
+Chromium played the real daily on the local server at 1440 × 900, 1920 × 1080, and 390 × 844. The map viewport measured 1395 × 684, 1860 × 864, and 372 × 490 respectively. Each run verified that the confirmation button fit on screen, placed world pins across both landmasses and the ocean, checked their saved canonical coordinates, completed all five rounds for 25,000, and restored the result after refresh. The runs recorded zero console and network errors.
+
+[Desktop round](qa/wide-map-desktop.png) · [Mobile round](qa/wide-map-mobile.png)

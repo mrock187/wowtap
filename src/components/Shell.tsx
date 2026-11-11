@@ -42,7 +42,7 @@ export function Shell({ children, actions }: { children: ReactNode; actions?: Re
         <div className="masthead-inner">
           <div className="brand">
             <Compass />
-            <div><strong>WoWtap</strong><span>THE DAILY ATLAS</span></div>
+            <strong>WoWtap</strong>
           </div>
           <nav aria-label="Game information"><HelpButton />{actions}</nav>
         </div>
@@ -56,17 +56,15 @@ export function Shell({ children, actions }: { children: ReactNode; actions?: Re
   )
 }
 
-export function Cover({ children, map }: { children: ReactNode; map?: string }) {
+export function Cover({ children, map }: { children: ReactNode; map?: ReactNode }) {
   return (
     <section className="cover" aria-labelledby="cover-title">
-      {map && <img className="cover-map" src={map} alt="" />}
       <div className="cover-copy">
-        <p className="eyebrow"><span aria-hidden="true">✦</span> A daily expedition</p>
-        <h1 id="cover-title">Find your way<br className="cover-break" /> across Azeroth.</h1>
-        <p className="cover-deck">Five places. One unlabeled map. How close can you get?</p>
+        <h1 id="cover-title">Azeroth Daily</h1>
+        <p className="cover-deck">Find five places on the map.</p>
         {children}
       </div>
-      {!map && <div className="cover-ornament" aria-hidden="true"><Compass size={312} /></div>}
+      {map}
     </section>
   )
 }

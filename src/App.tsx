@@ -2,7 +2,10 @@ import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } fro
 import { Cover, Shell } from './components/Shell'
 import { Expedition } from './components/game/Expedition'
 import { formatDate } from './components/game/resultText'
+import { MapArtwork } from './components/map/MapArtwork'
+import { worldProjection } from './components/map/worldProjection'
 import { loadSchedule } from './content/loadSchedule'
+import { createAtlas } from './domain/atlas'
 import { readPuzzle, utcDate, type DailyPuzzle, type FrozenSchedule } from './engine/schedule'
 import { createJournalStore, playAction, recordFor, startRecord, streaks, type GameRecord } from './storage/journal'
 
@@ -58,8 +61,7 @@ export function App() {
   const stats = streaks(completed.map(puzzle => puzzle.date), today)
   const qa = import.meta.env.DEV && import.meta.env.MODE === 'qa'
   const localForever = import.meta.env.DEV && import.meta.env.MODE === 'local-forever'
-  const world = todayPuzzle?.atlas.layers.find(layer => layer.kind === 'world')
-  const coverMap = world && import.meta.env.BASE_URL + (localForever ? `terrain/${world.uiMapId}.png` : world.image)
+  const todayAtlas = useMemo(() => todayPuzzle && createAtlas(todayPuzzle.atlas), [todayPuzzle])
 
   function start() {
     if (!todayPuzzle) return
@@ -128,15 +130,14 @@ export function App() {
           }}
         />
       ) : (
-        <Cover map={coverMap}>
+        <Cover map={todayAtlas && <CoverMap atlas={todayAtlas} localForever={localForever} />}>
           {todayPuzzle ? (
             <div className="cover-status">
-              <p className="eyebrow"><time dateTime={today}>{formatDate(today)}</time> · UTC</p>
+              <p className="cover-date"><time dateTime={today}>{formatDate(today)}</time> · UTC</p>
               <button className="button primary cover-start" onClick={start}>
                 {dailyRecord?.guesses.length === 5 && !dailyRecord.revealing ? 'View today’s result'
                   : dailyRecord ? 'Resume expedition' : 'Begin expedition'} <span aria-hidden="true">→</span>
               </button>
-              <p className="cover-reset">A new expedition opens at midnight UTC.</p>
             </div>
           ) : (
             <div className="cover-status" role="status">
@@ -149,5 +150,20 @@ export function App() {
         </Cover>
       )}
     </Shell>
+  )
+}
+
+function CoverMap({ atlas, localForever }: { atlas: ReturnType<typeof createAtlas>; localForever: boolean }) {
+  const world = atlas.world
+  const extent = atlas.bounds(world.id)
+  const projection = worldProjection(atlas)
+  const display = projection?.bounds ?? extent
+  const path = localForever && world.uiMapId ? `terrain/${world.uiMapId}.png` : world.image
+
+  return (
+    <svg className="cover-map" viewBox={`0 0 ${display.width} ${display.height}`} aria-hidden="true">
+      <MapArtwork extent={extent} projection={projection} width={extent.width} height={extent.height}
+        href={import.meta.env.BASE_URL + path} />
+    </svg>
   )
 }

@@ -51,23 +51,13 @@ export function Expedition({ puzzle, record, practice, onAction, onReturn }: Exp
 
   return (
     <section className="expedition" aria-label={practice ? 'Practice expedition' : 'Daily expedition'}>
-      <div className="expedition-meta">
-        <button className="button quiet" onClick={onReturn}>← Daily atlas</button>
-        <p>{practice ? 'Practice · ' : ''}<time dateTime={puzzle.date}>{formatDate(puzzle.date)}</time> · UTC</p>
-      </div>
       <div className="question">
-        <div className="running-total score-tile"><span>Score</span><strong>{number(total)} <small>/ 25,000</small></strong></div>
+        <button className="button quiet expedition-home" onClick={onReturn}>← Daily atlas</button>
         <div className="question-prompt">
-          <p className="eyebrow">Round {round + 1} of 5 <span aria-hidden="true">·</span> {category[location.category]}</p>
+          <p className="round-label">{practice ? 'Practice · ' : ''}Round {round + 1} of 5 · {category[location.category]}</p>
           <h1 ref={title} tabIndex={-1}>{location.name}</h1>
         </div>
-        <ol className="round-track" aria-label="Round progress">
-          {puzzle.rounds.map((_, index) => (
-            <li key={index} aria-current={round === index ? 'step' : undefined} className={index < count ? 'done' : ''}>
-              <span className="sr-only">Round </span>{index + 1}
-            </li>
-          ))}
-        </ol>
+        <div className="running-total"><span>Score</span><strong>{number(total)} <small>/ 25,000</small></strong></div>
       </div>
       <div className="expedition-grid">
         <MapBoard
@@ -77,7 +67,7 @@ export function Expedition({ puzzle, record, practice, onAction, onReturn }: Exp
           onPin={guess => onAction({ type: 'pin', round: count, guess })}
           reveal={score && { mapId: location.mapId, answers: location.answers, closest: score.answer }}
         />
-        <aside className="round-panel" aria-label={record.revealing ? 'Round result' : 'Pin and confirm'}>
+        <aside className={score ? 'round-panel' : 'round-panel guess-actions'} aria-label={record.revealing ? 'Round result' : 'Pin and confirm'}>
           {score ? (
             <>
               <div className="round-copy">
@@ -94,10 +84,7 @@ export function Expedition({ puzzle, record, practice, onAction, onReturn }: Exp
             </>
           ) : (
             <>
-              <div className="round-copy">
-                <h2>{record.pending ? 'Pin placed' : 'Tap the map to guess'}</h2>
-                <p>{record.pending ? 'Tap again to move your pin.' : 'Drag to pan or zoom in for a closer look.'}</p>
-              </div>
+              <p aria-live="polite">{record.pending ? 'Pin placed' : 'Tap the map to place a pin'}</p>
               <button
                 className="button primary"
                 disabled={!record.pending}

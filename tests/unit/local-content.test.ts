@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { worldProjection } from '../../src/components/map/worldProjection'
 import { createAtlas } from '../../src/domain/atlas'
 import { build, createLocalContent } from '../../scripts/local/content'
 
@@ -18,6 +19,24 @@ const source = {
 }
 
 describe('local Forever atlas intake', () => {
+  it('compresses the overview ocean and round-trips canonical positions on both shores', () => {
+    const atlas = createAtlas(createLocalContent(source).atlas)
+    const west = atlas.bounds('kalimdor')
+    const east = atlas.bounds('eastern-kingdoms')
+    const westEdge = west.left + west.width
+    const projection = worldProjection(atlas)!
+    const toDisplayX = (x: number) => projection.project({ x, y: 0 }).x
+
+    expect(toDisplayX(east.left) - toDisplayX(westEdge)).toBeCloseTo((east.left - westEdge) * .28)
+    expect(toDisplayX(westEdge) - toDisplayX(west.left)).toBeCloseTo(west.width)
+    expect(toDisplayX(east.left + east.width) - toDisplayX(east.left)).toBeCloseTo(east.width)
+    for (const x of [0, west.left, westEdge, (westEdge + east.left) / 2, east.left, east.left + east.width, 1002]) {
+      const restored = projection.unproject(projection.project({ x, y: 250 }))
+      expect(restored.x).toBeCloseTo(x)
+      expect(restored.y).toBe(250)
+    }
+  })
+
   it('preserves canonical client coordinates and image registration while cropping overflow', () => {
     const { atlas: manifest, dataset } = createLocalContent(source)
     const atlas = createAtlas(manifest)
